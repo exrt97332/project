@@ -1,0 +1,1586 @@
+.class public Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;
+.super Lage/of/civilizations2/jakowski/lukasz/Menu;
+.source "Menu_InGame_View_Festivals.java"
+
+
+# static fields
+.field public static hideAnimation:Z = true
+
+.field public static lTime:J
+
+
+# direct methods
+.method static constructor <clinit>()V
+    .locals 0
+
+    return-void
+.end method
+
+.method public constructor <init>()V
+    .locals 32
+
+    .line 37
+    invoke-direct/range {p0 .. p0}, Lage/of/civilizations2/jakowski/lukasz/Menu;-><init>()V
+
+    .line 38
+    sget v16, Lage/of/civilizations2/jakowski/lukasz/CFG;->CIV_INFO_MENU_WIDTH:I
+
+    .line 41
+    new-instance v15, Ljava/util/ArrayList;
+
+    invoke-direct {v15}, Ljava/util/ArrayList;-><init>()V
+
+    .line 45
+    new-instance v8, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals$1;
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    const-string v1, "TopCivilizations"
+
+    invoke-virtual {v0, v1}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v2
+
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->TEXT_HEIGHT_DEFAULT:I
+
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    mul-int/lit8 v1, v1, 0x4
+
+    add-int v7, v0, v1
+
+    const/4 v3, -0x1
+
+    const/4 v4, 0x0
+
+    const/4 v5, 0x0
+
+    move-object v0, v8
+
+    move-object/from16 v1, p0
+
+    move/from16 v6, v16
+
+    invoke-direct/range {v0 .. v7}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals$1;-><init>(Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;Ljava/lang/String;IIIII)V
+
+    invoke-interface {v15, v8}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 52
+    invoke-interface {v15}, Ljava/util/List;->size()I
+
+    move-result v0
+
+    const/16 v17, 0x1
+
+    add-int/lit8 v0, v0, -0x1
+
+    invoke-interface {v15, v0}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v0
+
+    check-cast v0, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;
+
+    invoke-virtual {v0}, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;->getHeightE()I
+
+    move-result v8
+
+    .line 54
+    new-instance v0, Ljava/util/ArrayList;
+
+    invoke-direct {v0}, Ljava/util/ArrayList;-><init>()V
+
+    .line 55
+    new-instance v14, Ljava/util/ArrayList;
+
+    invoke-direct {v14}, Ljava/util/ArrayList;-><init>()V
+
+    move/from16 v1, v17
+
+    .line 57
+    :goto_0
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-virtual {v2}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCivsSize()I
+
+    move-result v2
+
+    if-ge v1, v2, :cond_1
+
+    .line 58
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-virtual {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v2
+
+    invoke-virtual {v2}, Lage/of/civilizations2/jakowski/lukasz/Civilization;->getNumOfProvs()I
+
+    move-result v2
+
+    if-lez v2, :cond_0
+
+    .line 60
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-virtual {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v2
+
+    iget-object v2, v2, Lage/of/civilizations2/jakowski/lukasz/Civilization;->civGD:Lage/of/civilizations2/jakowski/lukasz/Save/Save_Civ_GameData;
+
+    iget-wide v2, v2, Lage/of/civilizations2/jakowski/lukasz/Save/Save_Civ_GameData;->fECG:J
+
+    const-wide/16 v4, 0x0
+
+    cmp-long v2, v2, v4
+
+    if-lez v2, :cond_0
+
+    .line 61
+    invoke-static {v1}, Ljava/lang/Integer;->valueOf(I)Ljava/lang/Integer;
+
+    move-result-object v2
+
+    invoke-interface {v0, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    :cond_0
+    add-int/lit8 v1, v1, 0x1
+
+    goto :goto_0
+
+    .line 67
+    :cond_1
+    :goto_1
+    invoke-interface {v0}, Ljava/util/List;->isEmpty()Z
+
+    move-result v1
+
+    const/16 v18, 0x0
+
+    if-nez v1, :cond_4
+
+    move/from16 v2, v17
+
+    move/from16 v1, v18
+
+    .line 70
+    :goto_2
+    invoke-interface {v0}, Ljava/util/List;->size()I
+
+    move-result v3
+
+    if-ge v2, v3, :cond_3
+
+    .line 71
+    sget-object v3, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-interface {v0, v2}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v4
+
+    check-cast v4, Ljava/lang/Integer;
+
+    invoke-virtual {v4}, Ljava/lang/Integer;->intValue()I
+
+    move-result v4
+
+    invoke-virtual {v3, v4}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v3
+
+    iget-object v3, v3, Lage/of/civilizations2/jakowski/lukasz/Civilization;->civGD:Lage/of/civilizations2/jakowski/lukasz/Save/Save_Civ_GameData;
+
+    iget-wide v3, v3, Lage/of/civilizations2/jakowski/lukasz/Save/Save_Civ_GameData;->fECG:J
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-interface {v0, v1}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v6
+
+    check-cast v6, Ljava/lang/Integer;
+
+    invoke-virtual {v6}, Ljava/lang/Integer;->intValue()I
+
+    move-result v6
+
+    invoke-virtual {v5, v6}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v5
+
+    iget-object v5, v5, Lage/of/civilizations2/jakowski/lukasz/Civilization;->civGD:Lage/of/civilizations2/jakowski/lukasz/Save/Save_Civ_GameData;
+
+    iget-wide v5, v5, Lage/of/civilizations2/jakowski/lukasz/Save/Save_Civ_GameData;->fECG:J
+
+    cmp-long v3, v3, v5
+
+    if-lez v3, :cond_2
+
+    move v1, v2
+
+    :cond_2
+    add-int/lit8 v2, v2, 0x1
+
+    goto :goto_2
+
+    .line 76
+    :cond_3
+    invoke-interface {v0, v1}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v2
+
+    check-cast v2, Ljava/lang/Integer;
+
+    invoke-interface {v14, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 77
+    invoke-interface {v0, v1}, Ljava/util/List;->remove(I)Ljava/lang/Object;
+
+    goto :goto_1
+
+    .line 82
+    :cond_4
+    invoke-interface {v14}, Ljava/util/List;->isEmpty()Z
+
+    move-result v0
+
+    const-string v12, ""
+
+    const/4 v13, 0x2
+
+    const/16 v19, -0x1
+
+    if-nez v0, :cond_b
+
+    move/from16 v20, v8
+
+    move/from16 v11, v18
+
+    move/from16 v0, v19
+
+    .line 83
+    :goto_3
+    invoke-interface {v14}, Ljava/util/List;->size()I
+
+    move-result v1
+
+    if-ge v11, v1, :cond_a
+
+    .line 84
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->FOG_OF_WAR:I
+
+    if-lt v1, v13, :cond_6
+
+    sget-object v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->PLAYER_TURN_ID:I
+
+    invoke-virtual {v1, v2}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getPlayer(I)Lage/of/civilizations2/jakowski/lukasz/Player;
+
+    move-result-object v1
+
+    invoke-interface {v14, v11}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v2
+
+    check-cast v2, Ljava/lang/Integer;
+
+    invoke-virtual {v2}, Ljava/lang/Integer;->intValue()I
+
+    move-result v2
+
+    invoke-virtual {v1, v2}, Lage/of/civilizations2/jakowski/lukasz/Player;->getMetCiv(I)Z
+
+    move-result v1
+
+    if-eqz v1, :cond_5
+
+    goto :goto_4
+
+    :cond_5
+    move/from16 v1, v18
+
+    goto :goto_5
+
+    :cond_6
+    :goto_4
+    move/from16 v1, v17
+
+    .line 86
+    :goto_5
+    invoke-interface {v14, v11}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v2
+
+    check-cast v2, Ljava/lang/Integer;
+
+    invoke-virtual {v2}, Ljava/lang/Integer;->intValue()I
+
+    move-result v2
+
+    sget-object v3, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget v4, Lage/of/civilizations2/jakowski/lukasz/CFG;->PLAYER_TURN_ID:I
+
+    invoke-virtual {v3, v4}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getPlayer(I)Lage/of/civilizations2/jakowski/lukasz/Player;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Lage/of/civilizations2/jakowski/lukasz/Player;->getCivId()I
+
+    move-result v3
+
+    if-ne v2, v3, :cond_7
+
+    add-int/lit8 v0, v11, 0x1
+
+    :cond_7
+    move/from16 v21, v0
+
+    .line 90
+    new-instance v10, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals$2;
+
+    new-instance v2, Lcom/badlogic/gdx/graphics/Color;
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-interface {v14, v11}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v3
+
+    check-cast v3, Ljava/lang/Integer;
+
+    invoke-virtual {v3}, Ljava/lang/Integer;->intValue()I
+
+    move-result v3
+
+    invoke-virtual {v0, v3}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lage/of/civilizations2/jakowski/lukasz/Civilization;->getR()I
+
+    move-result v0
+
+    int-to-float v0, v0
+
+    const/high16 v3, 0x437f0000    # 255.0f
+
+    div-float/2addr v0, v3
+
+    sget-object v4, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-interface {v14, v11}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v5
+
+    check-cast v5, Ljava/lang/Integer;
+
+    invoke-virtual {v5}, Ljava/lang/Integer;->intValue()I
+
+    move-result v5
+
+    invoke-virtual {v4, v5}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v4
+
+    invoke-virtual {v4}, Lage/of/civilizations2/jakowski/lukasz/Civilization;->getG()I
+
+    move-result v4
+
+    int-to-float v4, v4
+
+    div-float/2addr v4, v3
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-interface {v14, v11}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v6
+
+    check-cast v6, Ljava/lang/Integer;
+
+    invoke-virtual {v6}, Ljava/lang/Integer;->intValue()I
+
+    move-result v6
+
+    invoke-virtual {v5, v6}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v5
+
+    invoke-virtual {v5}, Lage/of/civilizations2/jakowski/lukasz/Civilization;->getB()I
+
+    move-result v5
+
+    int-to-float v5, v5
+
+    div-float/2addr v5, v3
+
+    const/high16 v3, 0x3f800000    # 1.0f
+
+    invoke-direct {v2, v0, v4, v5, v3}, Lcom/badlogic/gdx/graphics/Color;-><init>(FFFF)V
+
+    new-instance v0, Ljava/lang/StringBuilder;
+
+    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
+
+    add-int/lit8 v9, v11, 0x1
+
+    invoke-virtual {v0, v9}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    const-string v3, ". "
+
+    invoke-virtual {v0, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    if-eqz v1, :cond_8
+
+    sget-object v3, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-interface {v14, v11}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v4
+
+    check-cast v4, Ljava/lang/Integer;
+
+    invoke-virtual {v4}, Ljava/lang/Integer;->intValue()I
+
+    move-result v4
+
+    invoke-virtual {v3, v4}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Lage/of/civilizations2/jakowski/lukasz/Civilization;->getCivName()Ljava/lang/String;
+
+    move-result-object v3
+
+    goto :goto_6
+
+    :cond_8
+    sget-object v3, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    const-string v4, "Undiscovered"
+
+    invoke-virtual {v3, v4}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v3
+
+    :goto_6
+    invoke-virtual {v0, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v3
+
+    if-eqz v1, :cond_9
+
+    invoke-interface {v14, v11}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v0
+
+    check-cast v0, Ljava/lang/Integer;
+
+    invoke-virtual {v0}, Ljava/lang/Integer;->intValue()I
+
+    move-result v0
+
+    move v4, v0
+
+    goto :goto_7
+
+    :cond_9
+    move/from16 v4, v19
+
+    :goto_7
+    new-instance v0, Ljava/lang/StringBuilder;
+
+    invoke-direct {v0, v12}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+
+    new-instance v1, Ljava/lang/StringBuilder;
+
+    invoke-direct {v1, v12}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-interface {v14, v11}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v6
+
+    check-cast v6, Ljava/lang/Integer;
+
+    invoke-virtual {v6}, Ljava/lang/Integer;->intValue()I
+
+    move-result v6
+
+    invoke-virtual {v5, v6}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v5
+
+    iget-object v5, v5, Lage/of/civilizations2/jakowski/lukasz/Civilization;->civGD:Lage/of/civilizations2/jakowski/lukasz/Save/Save_Civ_GameData;
+
+    iget v5, v5, Lage/of/civilizations2/jakowski/lukasz/Save/Save_Civ_GameData;->fE:I
+
+    invoke-virtual {v1, v5}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v1
+
+    invoke-static {v1}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getNumberWthSpaces(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v1
+
+    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v6
+
+    sget v7, Lage/of/civilizations2/jakowski/lukasz/Images;->diploFestival:I
+
+    sget-object v8, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_TEXT_NUM_OF_PROVINCES:Lcom/badlogic/gdx/graphics/Color;
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-interface {v14, v11}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v1
+
+    check-cast v1, Ljava/lang/Integer;
+
+    invoke-virtual {v1}, Ljava/lang/Integer;->intValue()I
+
+    move-result v1
+
+    invoke-virtual {v0, v1}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v0
+
+    iget-object v0, v0, Lage/of/civilizations2/jakowski/lukasz/Civilization;->civGD:Lage/of/civilizations2/jakowski/lukasz/Save/Save_Civ_GameData;
+
+    iget-wide v0, v0, Lage/of/civilizations2/jakowski/lukasz/Save/Save_Civ_GameData;->fECG:J
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/Images;->topGold()I
+
+    move-result v22
+
+    sget-object v23, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_NEUTRAL:Lcom/badlogic/gdx/graphics/Color;
+
+    const/4 v5, 0x0
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/Menus/CreateScenarios/JCg/jMfACtm;->yYGaDEaOUb:Ljava/lang/String;
+
+    const/16 v24, 0x0
+
+    move-wide/from16 v25, v0
+
+    move-object v0, v10
+
+    move-object/from16 v1, p0
+
+    move/from16 v27, v9
+
+    move/from16 v9, v24
+
+    move-object/from16 v28, v10
+
+    move/from16 v10, v20
+
+    move/from16 v24, v11
+
+    move/from16 v11, v16
+
+    move-object/from16 v29, v12
+
+    move/from16 v30, v13
+
+    move-wide/from16 v12, v25
+
+    move-object/from16 v25, v14
+
+    move/from16 v14, v22
+
+    move-object/from16 v31, v15
+
+    move-object/from16 v15, v23
+
+    invoke-direct/range {v0 .. v15}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals$2;-><init>(Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;Lcom/badlogic/gdx/graphics/Color;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;ILcom/badlogic/gdx/graphics/Color;IIIJILcom/badlogic/gdx/graphics/Color;)V
+
+    move-object/from16 v0, v28
+
+    move-object/from16 v9, v31
+
+    invoke-interface {v9, v0}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 170
+    invoke-interface {v9}, Ljava/util/List;->size()I
+
+    move-result v0
+
+    add-int/lit8 v0, v0, -0x1
+
+    invoke-interface {v9, v0}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v0
+
+    check-cast v0, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;
+
+    rem-int/lit8 v11, v24, 0x2
+
+    invoke-virtual {v0, v11}, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;->setCurr(I)V
+
+    .line 171
+    invoke-interface {v9}, Ljava/util/List;->size()I
+
+    move-result v0
+
+    add-int/lit8 v0, v0, -0x1
+
+    invoke-interface {v9, v0}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v0
+
+    check-cast v0, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;
+
+    invoke-virtual {v0}, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;->getHeightE()I
+
+    move-result v0
+
+    add-int v20, v20, v0
+
+    move-object v15, v9
+
+    move/from16 v0, v21
+
+    move-object/from16 v14, v25
+
+    move/from16 v11, v27
+
+    move-object/from16 v12, v29
+
+    move/from16 v13, v30
+
+    goto/16 :goto_3
+
+    :cond_a
+    move-object/from16 v29, v12
+
+    move/from16 v30, v13
+
+    move-object v9, v15
+
+    goto :goto_8
+
+    :cond_b
+    move-object/from16 v29, v12
+
+    move/from16 v30, v13
+
+    move-object v9, v15
+
+    .line 175
+    new-instance v10, Lage/of/civilizations2/jakowski/lukasz/TextB/Texts/TextScale;
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    const-string v1, "NoData"
+
+    invoke-virtual {v0, v1}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v1
+
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->BUTTON_H:I
+
+    mul-int/lit8 v0, v0, 0x3
+
+    div-int/lit8 v6, v0, 0x4
+
+    const/high16 v7, 0x3f400000    # 0.75f
+
+    const/4 v2, -0x1
+
+    const/4 v3, 0x0
+
+    move-object v0, v10
+
+    move v4, v8
+
+    move/from16 v5, v16
+
+    invoke-direct/range {v0 .. v7}, Lage/of/civilizations2/jakowski/lukasz/TextB/Texts/TextScale;-><init>(Ljava/lang/String;IIIIIF)V
+
+    invoke-interface {v9, v10}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 176
+    invoke-interface {v9}, Ljava/util/List;->size()I
+
+    move-result v0
+
+    add-int/lit8 v0, v0, -0x1
+
+    invoke-interface {v9, v0}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object v0
+
+    check-cast v0, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;
+
+    invoke-virtual {v0}, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;->getHeightE()I
+
+    move-result v0
+
+    add-int v20, v8, v0
+
+    move/from16 v0, v19
+
+    .line 179
+    :goto_8
+    new-instance v7, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals$3;
+
+    new-instance v1, Ljava/lang/StringBuilder;
+
+    invoke-direct {v1}, Ljava/lang/StringBuilder;-><init>()V
+
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    const-string v3, "Festivals"
+
+    invoke-virtual {v2, v3}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v2
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    if-lez v0, :cond_c
+
+    new-instance v2, Ljava/lang/StringBuilder;
+
+    const-string v3, " #"
+
+    invoke-direct {v2, v3}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+
+    invoke-virtual {v2, v0}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v12
+
+    goto :goto_9
+
+    :cond_c
+    move-object/from16 v12, v29
+
+    :goto_9
+    invoke-virtual {v1, v12}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v3
+
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->BUTTON_H:I
+
+    mul-int/lit8 v0, v0, 0x3
+
+    div-int/lit8 v4, v0, 0x5
+
+    const/4 v5, 0x0
+
+    const/4 v6, 0x0
+
+    move-object v1, v7
+
+    move-object/from16 v2, p0
+
+    invoke-direct/range {v1 .. v6}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals$3;-><init>(Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;Ljava/lang/String;IZZ)V
+
+    sget v2, Lage/of/civilizations2/jakowski/lukasz/AoCGame;->LEFT:I
+
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/Images;->topFlagBG:I
+
+    .line 221
+    invoke-static {v0}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lage/of/civilizations2/jakowski/lukasz/Image;->getHeight()I
+
+    move-result v0
+
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    mul-int/lit8 v1, v1, 0x3
+
+    add-int/2addr v0, v1
+
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->BUTTON_H:I
+
+    mul-int/lit8 v1, v1, 0x3
+
+    div-int/lit8 v1, v1, 0x5
+
+    add-int v3, v0, v1
+
+    add-int/lit8 v0, v20, 0x1
+
+    .line 222
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->isAndroid()Z
+
+    move-result v1
+
+    if-eqz v1, :cond_d
+
+    sget-boolean v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->LANDSCAPE:Z
+
+    if-nez v1, :cond_d
+
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->GAMEHEIGHT:I
+
+    sget v4, Lage/of/civilizations2/jakowski/lukasz/Images;->topFlagBG:I
+
+    invoke-static {v4}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v4
+
+    invoke-virtual {v4}, Lage/of/civilizations2/jakowski/lukasz/Image;->getHeight()I
+
+    move-result v4
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    mul-int/lit8 v5, v5, 0x3
+
+    add-int/2addr v4, v5
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->BUTTON_H:I
+
+    mul-int/lit8 v5, v5, 0x3
+
+    div-int/lit8 v5, v5, 0x4
+
+    add-int/2addr v4, v5
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    mul-int/lit8 v5, v5, 0x2
+
+    sget v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->BUTTON_H:I
+
+    add-int/2addr v5, v6
+
+    mul-int/lit8 v5, v5, 0x2
+
+    add-int/2addr v4, v5
+
+    sub-int/2addr v1, v4
+
+    div-int/lit8 v1, v1, 0x2
+
+    goto :goto_a
+
+    :cond_d
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->GAMEHEIGHT:I
+
+    sget v4, Lage/of/civilizations2/jakowski/lukasz/Images;->topFlagBG:I
+
+    invoke-static {v4}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v4
+
+    invoke-virtual {v4}, Lage/of/civilizations2/jakowski/lukasz/Image;->getHeight()I
+
+    move-result v4
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    mul-int/lit8 v5, v5, 0x3
+
+    add-int/2addr v4, v5
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->BUTTON_H:I
+
+    mul-int/lit8 v5, v5, 0x3
+
+    div-int/lit8 v5, v5, 0x4
+
+    add-int/2addr v4, v5
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/GameValues/GameValues;->gvInGame:Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;
+
+    iget-boolean v5, v5, Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;->MAP_MODES_MENUS_TO_PROVINCE_INFO:Z
+
+    if-eqz v5, :cond_e
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    mul-int/lit8 v5, v5, 0x2
+
+    sget v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->BUTTON_H:I
+
+    add-int/2addr v5, v6
+
+    mul-int/lit8 v18, v5, 0x2
+
+    :cond_e
+    add-int v4, v4, v18
+
+    sub-int/2addr v1, v4
+
+    :goto_a
+    invoke-static {v0, v1}, Ljava/lang/Math;->min(II)I
+
+    move-result v5
+
+    const/4 v8, 0x0
+
+    const/4 v10, 0x1
+
+    move-object/from16 v0, p0
+
+    move-object v1, v7
+
+    move/from16 v4, v16
+
+    move-object v6, v9
+
+    move v7, v8
+
+    move v8, v10
+
+    .line 179
+    invoke-virtual/range {v0 .. v8}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->initMenu(Lage/of/civilizations2/jakowski/lukasz/Title/TitleM;IIIILjava/util/List;ZZ)V
+
+    .line 226
+    invoke-virtual/range {p0 .. p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->updateLang()V
+
+    return-void
+.end method
+
+
+# virtual methods
+.method public actionEL(I)V
+    .locals 1
+
+    .line 287
+    invoke-virtual {p0, p1}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getMenuElem(I)Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;
+
+    move-result-object v0
+
+    invoke-virtual {v0, p1}, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;->actionElem(I)V
+
+    return-void
+.end method
+
+.method public draw(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;IIZ)V
+    .locals 9
+
+    .line 246
+    sget-wide v0, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->lTime:J
+
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/GameValues/GameValues;->gvInGame:Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;
+
+    iget v2, v2, Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;->MENUS_ANIMATION_TIME:I
+
+    int-to-long v2, v2
+
+    add-long/2addr v0, v2
+
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+
+    move-result-wide v2
+
+    cmp-long v0, v0, v2
+
+    if-ltz v0, :cond_1
+
+    .line 247
+    sget-boolean v0, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->hideAnimation:Z
+
+    if-eqz v0, :cond_0
+
+    .line 248
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getWidthM()I
+
+    move-result v0
+
+    int-to-float v0, v0
+
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+
+    move-result-wide v1
+
+    sget-wide v3, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->lTime:J
+
+    sub-long/2addr v1, v3
+
+    long-to-float v1, v1
+
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/GameValues/GameValues;->gvInGame:Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;
+
+    iget v2, v2, Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;->MENUS_ANIMATION_TIME:I
+
+    int-to-float v2, v2
+
+    div-float/2addr v1, v2
+
+    mul-float/2addr v0, v1
+
+    float-to-int v0, v0
+
+    sub-int/2addr p2, v0
+
+    goto :goto_0
+
+    .line 251
+    :cond_0
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getWidthM()I
+
+    move-result v0
+
+    neg-int v0, v0
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getWidthM()I
+
+    move-result v1
+
+    int-to-float v1, v1
+
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+
+    move-result-wide v2
+
+    sget-wide v4, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->lTime:J
+
+    sub-long/2addr v2, v4
+
+    long-to-float v2, v2
+
+    sget-object v3, Lage/of/civilizations2/jakowski/lukasz/GameValues/GameValues;->gvInGame:Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;
+
+    iget v3, v3, Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;->MENUS_ANIMATION_TIME:I
+
+    int-to-float v3, v3
+
+    div-float/2addr v2, v3
+
+    mul-float/2addr v1, v2
+
+    float-to-int v1, v1
+
+    add-int/2addr v0, v1
+
+    add-int/2addr p2, v0
+
+    :goto_0
+    const/4 v0, 0x1
+
+    .line 254
+    invoke-static {v0}, Lage/of/civilizations2/jakowski/lukasz/CFG;->setRenderO(Z)V
+
+    goto :goto_1
+
+    .line 255
+    :cond_1
+    sget-boolean v0, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->hideAnimation:Z
+
+    if-eqz v0, :cond_2
+
+    const/4 p1, 0x0
+
+    .line 256
+    invoke-super {p0, p1}, Lage/of/civilizations2/jakowski/lukasz/Menu;->setVisibleM(Z)V
+
+    return-void
+
+    .line 260
+    :cond_2
+    :goto_1
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/Images;->gameTopEdgeLine:I
+
+    invoke-static {v0}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v1
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosX()I
+
+    move-result v0
+
+    add-int v3, v0, p2
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosY()I
+
+    move-result v0
+
+    sget v2, Lage/of/civilizations2/jakowski/lukasz/Images;->gameTopEdgeLine:I
+
+    invoke-static {v2}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v2
+
+    invoke-virtual {v2}, Lage/of/civilizations2/jakowski/lukasz/Image;->getHeight()I
+
+    move-result v2
+
+    sub-int/2addr v0, v2
+
+    add-int v4, v0, p3
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getWidthM()I
+
+    move-result v0
+
+    add-int/lit8 v0, v0, 0x2
+
+    sget v2, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->PADDING:I
+
+    add-int v5, v0, v2
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getHeightM()I
+
+    move-result v0
+
+    sget v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    add-int v6, v0, v2
+
+    const/4 v7, 0x1
+
+    const/4 v8, 0x1
+
+    move-object v2, p1
+
+    invoke-virtual/range {v1 .. v8}, Lage/of/civilizations2/jakowski/lukasz/Image;->draw2O(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;IIIIZZ)V
+
+    .line 262
+    new-instance v0, Lcom/badlogic/gdx/graphics/Color;
+
+    const v1, 0x3ebebebf
+
+    const/high16 v2, 0x3e800000    # 0.25f
+
+    const v3, 0x3dc8c8c9
+
+    const v4, 0x3d70f0f1
+
+    invoke-direct {v0, v3, v4, v1, v2}, Lcom/badlogic/gdx/graphics/Color;-><init>(FFFF)V
+
+    invoke-virtual {p1, v0}, Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;->setColor(Lcom/badlogic/gdx/graphics/Color;)V
+
+    .line 263
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/Images;->gradient:I
+
+    invoke-static {v0}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v1
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosX()I
+
+    move-result v0
+
+    add-int v3, v0, p2
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosY()I
+
+    move-result v0
+
+    sget v2, Lage/of/civilizations2/jakowski/lukasz/Images;->gradient:I
+
+    invoke-static {v2}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v2
+
+    invoke-virtual {v2}, Lage/of/civilizations2/jakowski/lukasz/Image;->getHeight()I
+
+    move-result v2
+
+    sub-int/2addr v0, v2
+
+    add-int v4, v0, p3
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getWidthM()I
+
+    move-result v5
+
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    mul-int/lit8 v6, v0, 0x4
+
+    move-object v2, p1
+
+    invoke-virtual/range {v1 .. v6}, Lage/of/civilizations2/jakowski/lukasz/Image;->drawO(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;IIII)V
+
+    .line 265
+    new-instance v0, Lcom/badlogic/gdx/graphics/Color;
+
+    const v1, 0x3f266666    # 0.65f
+
+    const/4 v2, 0x0
+
+    invoke-direct {v0, v2, v2, v2, v1}, Lcom/badlogic/gdx/graphics/Color;-><init>(FFFF)V
+
+    invoke-virtual {p1, v0}, Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;->setColor(Lcom/badlogic/gdx/graphics/Color;)V
+
+    .line 266
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/Images;->gradient:I
+
+    invoke-static {v0}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v3
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosX()I
+
+    move-result v0
+
+    add-int v5, v0, p2
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosY()I
+
+    move-result v0
+
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/Images;->gradient:I
+
+    invoke-static {v1}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Lage/of/civilizations2/jakowski/lukasz/Image;->getHeight()I
+
+    move-result v1
+
+    sub-int/2addr v0, v1
+
+    add-int v6, v0, p3
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getWidthM()I
+
+    move-result v7
+
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    mul-int/lit8 v8, v0, 0x2
+
+    move-object v4, p1
+
+    invoke-virtual/range {v3 .. v8}, Lage/of/civilizations2/jakowski/lukasz/Image;->drawO(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;IIII)V
+
+    .line 267
+    sget-object v0, Lcom/badlogic/gdx/graphics/Color;->WHITE:Lcom/badlogic/gdx/graphics/Color;
+
+    invoke-virtual {p1, v0}, Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;->setColor(Lcom/badlogic/gdx/graphics/Color;)V
+
+    .line 269
+    invoke-super {p0, p1, p2, p3, p4}, Lage/of/civilizations2/jakowski/lukasz/Menu;->draw(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;IIZ)V
+
+    .line 271
+    sget-object p3, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_CREATE_NEW_GAME_BOX_PLAYERS:Lcom/badlogic/gdx/graphics/Color;
+
+    invoke-virtual {p1, p3}, Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;->setColor(Lcom/badlogic/gdx/graphics/Color;)V
+
+    .line 272
+    sget p3, Lage/of/civilizations2/jakowski/lukasz/Images;->pix255:I
+
+    invoke-static {p3}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object p3
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosX()I
+
+    move-result p4
+
+    add-int/2addr p4, p2
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosY()I
+
+    move-result v0
+
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/Images;->pix255:I
+
+    invoke-static {v1}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Lage/of/civilizations2/jakowski/lukasz/Image;->getHeight()I
+
+    move-result v1
+
+    sub-int/2addr v0, v1
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getHeightM()I
+
+    move-result v1
+
+    add-int/2addr v0, v1
+
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    add-int/2addr v0, v1
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getWidthM()I
+
+    move-result v1
+
+    invoke-virtual {p3, p1, p4, v0, v1}, Lage/of/civilizations2/jakowski/lukasz/Image;->drawO(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;III)V
+
+    .line 273
+    new-instance p3, Lcom/badlogic/gdx/graphics/Color;
+
+    sget-object p4, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_FLAG_FRAME:Lcom/badlogic/gdx/graphics/Color;
+
+    iget p4, p4, Lcom/badlogic/gdx/graphics/Color;->r:F
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_FLAG_FRAME:Lcom/badlogic/gdx/graphics/Color;
+
+    iget v0, v0, Lcom/badlogic/gdx/graphics/Color;->g:F
+
+    sget-object v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_FLAG_FRAME:Lcom/badlogic/gdx/graphics/Color;
+
+    iget v1, v1, Lcom/badlogic/gdx/graphics/Color;->b:F
+
+    const v3, 0x3ecccccd    # 0.4f
+
+    invoke-direct {p3, p4, v0, v1, v3}, Lcom/badlogic/gdx/graphics/Color;-><init>(FFFF)V
+
+    invoke-virtual {p1, p3}, Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;->setColor(Lcom/badlogic/gdx/graphics/Color;)V
+
+    .line 274
+    sget p3, Lage/of/civilizations2/jakowski/lukasz/Images;->sliderGradient:I
+
+    invoke-static {p3}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object v3
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosX()I
+
+    move-result p3
+
+    add-int v5, p3, p2
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosY()I
+
+    move-result p3
+
+    sget p4, Lage/of/civilizations2/jakowski/lukasz/Images;->pix255:I
+
+    invoke-static {p4}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object p4
+
+    invoke-virtual {p4}, Lage/of/civilizations2/jakowski/lukasz/Image;->getHeight()I
+
+    move-result p4
+
+    sub-int/2addr p3, p4
+
+    sget p4, Lage/of/civilizations2/jakowski/lukasz/Images;->sliderGradient:I
+
+    invoke-static {p4}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object p4
+
+    invoke-virtual {p4}, Lage/of/civilizations2/jakowski/lukasz/Image;->getHeight()I
+
+    move-result p4
+
+    sub-int/2addr p3, p4
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getHeightM()I
+
+    move-result p4
+
+    add-int/2addr p3, p4
+
+    sget p4, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    add-int v6, p3, p4
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getWidthM()I
+
+    move-result v7
+
+    const/4 v8, 0x1
+
+    invoke-virtual/range {v3 .. v8}, Lage/of/civilizations2/jakowski/lukasz/Image;->drawO(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;IIII)V
+
+    .line 276
+    new-instance p3, Lcom/badlogic/gdx/graphics/Color;
+
+    const/high16 p4, 0x3f000000    # 0.5f
+
+    invoke-direct {p3, v2, v2, v2, p4}, Lcom/badlogic/gdx/graphics/Color;-><init>(FFFF)V
+
+    invoke-virtual {p1, p3}, Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;->setColor(Lcom/badlogic/gdx/graphics/Color;)V
+
+    .line 277
+    sget p3, Lage/of/civilizations2/jakowski/lukasz/Images;->pix255:I
+
+    invoke-static {p3}, Lage/of/civilizations2/jakowski/lukasz/IMGManager;->getIMG(I)Lage/of/civilizations2/jakowski/lukasz/Image;
+
+    move-result-object p3
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosX()I
+
+    move-result p4
+
+    add-int/2addr p4, p2
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getPosY()I
+
+    move-result p2
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getHeightM()I
+
+    move-result v0
+
+    add-int/2addr p2, v0
+
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    add-int/2addr p2, v0
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->getWidthM()I
+
+    move-result v0
+
+    add-int/lit8 v0, v0, 0x2
+
+    invoke-virtual {p3, p1, p4, p2, v0}, Lage/of/civilizations2/jakowski/lukasz/Image;->drawO(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;III)V
+
+    .line 279
+    sget-object p2, Lcom/badlogic/gdx/graphics/Color;->WHITE:Lcom/badlogic/gdx/graphics/Color;
+
+    invoke-virtual {p1, p2}, Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;->setColor(Lcom/badlogic/gdx/graphics/Color;)V
+
+    return-void
+.end method
+
+.method public drawScrollPos(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;IIZ)V
+    .locals 0
+
+    if-eqz p4, :cond_0
+
+    .line 240
+    invoke-super {p0, p1, p2, p3, p4}, Lage/of/civilizations2/jakowski/lukasz/Menu;->drawScrollPos(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;IIZ)V
+
+    :cond_0
+    return-void
+.end method
+
+.method public final setHideAnimation(Z)V
+    .locals 8
+
+    .line 302
+    sget-boolean v0, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->hideAnimation:Z
+
+    if-eq p1, v0, :cond_1
+
+    .line 303
+    sget-wide v0, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->lTime:J
+
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+
+    move-result-wide v2
+
+    sget-object v4, Lage/of/civilizations2/jakowski/lukasz/GameValues/GameValues;->gvInGame:Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;
+
+    iget v4, v4, Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;->MENUS_ANIMATION_TIME:I
+
+    int-to-long v4, v4
+
+    sub-long/2addr v2, v4
+
+    cmp-long v0, v0, v2
+
+    if-lez v0, :cond_0
+
+    .line 304
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+
+    move-result-wide v0
+
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/GameValues/GameValues;->gvInGame:Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;
+
+    iget v2, v2, Lage/of/civilizations2/jakowski/lukasz/GameValues/GV_InGame;->MENUS_ANIMATION_TIME:I
+
+    int-to-long v2, v2
+
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+
+    move-result-wide v4
+
+    sget-wide v6, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->lTime:J
+
+    sub-long/2addr v4, v6
+
+    sub-long/2addr v2, v4
+
+    sub-long/2addr v0, v2
+
+    sput-wide v0, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->lTime:J
+
+    goto :goto_0
+
+    .line 307
+    :cond_0
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+
+    move-result-wide v0
+
+    sput-wide v0, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->lTime:J
+
+    :goto_0
+    const/4 v0, 0x1
+
+    .line 310
+    invoke-static {v0}, Lage/of/civilizations2/jakowski/lukasz/CFG;->setRenderO(Z)V
+
+    .line 314
+    :cond_1
+    sput-boolean p1, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->hideAnimation:Z
+
+    return-void
+.end method
+
+.method public setVisibleM(Z)V
+    .locals 0
+
+    if-eqz p1, :cond_0
+
+    .line 293
+    invoke-super {p0, p1}, Lage/of/civilizations2/jakowski/lukasz/Menu;->setVisibleM(Z)V
+
+    const/4 p1, 0x0
+
+    .line 294
+    invoke-virtual {p0, p1}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->setHideAnimation(Z)V
+
+    goto :goto_0
+
+    :cond_0
+    const/4 p1, 0x1
+
+    .line 297
+    invoke-virtual {p0, p1}, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest2/Menu_InGame_View_Festivals;->setHideAnimation(Z)V
+
+    :goto_0
+    return-void
+.end method
+
+.method public updateLang()V
+    .locals 0
+
+    return-void
+.end method

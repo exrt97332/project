@@ -1,0 +1,874 @@
+.class Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions$4;
+.super Lage/of/civilizations2/jakowski/lukasz/Button/Diplomacy/Action/Button_DiplomacyAction;
+.source "Menu_InGame_Civ_Actions.java"
+
+
+# annotations
+.annotation system Ldalvik/annotation/EnclosingMethod;
+    value = Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions;-><init>()V
+.end annotation
+
+.annotation system Ldalvik/annotation/InnerClass;
+    accessFlags = 0x0
+    name = null
+.end annotation
+
+
+# instance fields
+.field final synthetic this$0:Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions;
+
+
+# direct methods
+.method constructor <init>(Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions;ILjava/lang/String;IIIIIZ)V
+    .locals 10
+
+    move-object v9, p0
+
+    move-object v0, p1
+
+    .line 224
+    iput-object v0, v9, Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions$4;->this$0:Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions;
+
+    move-object v0, p0
+
+    move v1, p2
+
+    move-object v2, p3
+
+    move v3, p4
+
+    move v4, p5
+
+    move/from16 v5, p6
+
+    move/from16 v6, p7
+
+    move/from16 v7, p8
+
+    move/from16 v8, p9
+
+    invoke-direct/range {v0 .. v8}, Lage/of/civilizations2/jakowski/lukasz/Button/Diplomacy/Action/Button_DiplomacyAction;-><init>(ILjava/lang/String;IIIIIZ)V
+
+    return-void
+.end method
+
+
+# virtual methods
+.method public actionElem(I)V
+    .locals 1
+
+    .line 297
+    sget-object p1, Lage/of/civilizations2/jakowski/lukasz/CFG;->menus:Lage/of/civilizations2/jakowski/lukasz/MenuManager;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v0
+
+    invoke-virtual {p1, v0}, Lage/of/civilizations2/jakowski/lukasz/MenuManager;->rebuildInGame_WarPreparations(I)V
+
+    return-void
+.end method
+
+.method public buildElemHover()V
+    .locals 9
+
+    .line 234
+    new-instance v0, Ljava/util/ArrayList;
+
+    invoke-direct {v0}, Ljava/util/ArrayList;-><init>()V
+
+    .line 235
+    new-instance v1, Ljava/util/ArrayList;
+
+    invoke-direct {v1}, Ljava/util/ArrayList;-><init>()V
+
+    .line 237
+    sget v2, Lage/of/civilizations2/jakowski/lukasz/GameCalendar;->TURNID:I
+
+    sget v3, Lage/of/civilizations2/jakowski/lukasz/CFG;->WAR_CANT_BE_DECLARED_IN_FIRST_X_TURNS:I
+
+    const/4 v4, 0x0
+
+    if-gt v2, v3, :cond_0
+
+    .line 238
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;
+
+    new-instance v3, Ljava/lang/StringBuilder;
+
+    invoke-direct {v3}, Ljava/lang/StringBuilder;-><init>()V
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    const-string v6, "AWarCantBeDeclaredInFirstXTurns"
+
+    sget v7, Lage/of/civilizations2/jakowski/lukasz/CFG;->WAR_CANT_BE_DECLARED_IN_FIRST_X_TURNS:I
+
+    invoke-virtual {v5, v6, v7}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;I)Ljava/lang/String;
+
+    move-result-object v5
+
+    invoke-virtual {v3, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v3
+
+    const-string v5, "."
+
+    invoke-virtual {v3, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v3
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_NEGATIVE_2:Lcom/badlogic/gdx/graphics/Color;
+
+    invoke-direct {v2, v3, v5}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;-><init>(Ljava/lang/String;Lcom/badlogic/gdx/graphics/Color;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 239
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Image_Big;
+
+    sget v3, Lage/of/civilizations2/jakowski/lukasz/Images;->diploWar:I
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    invoke-direct {v2, v3, v5, v4}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Image_Big;-><init>(III)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 240
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Flag_Big;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v3
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    invoke-direct {v2, v3, v5, v4}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Flag_Big;-><init>(III)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 241
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;
+
+    invoke-direct {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;-><init>(Ljava/util/List;)V
+
+    invoke-interface {v0, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 242
+    invoke-interface {v1}, Ljava/util/List;->clear()V
+
+    goto/16 :goto_0
+
+    .line 244
+    :cond_0
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget-object v3, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PLAYER_TURN_ID:I
+
+    invoke-virtual {v3, v5}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getPlayer(I)Lage/of/civilizations2/jakowski/lukasz/Player;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Lage/of/civilizations2/jakowski/lukasz/Player;->getCivId()I
+
+    move-result v3
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v5
+
+    invoke-virtual {v2, v3, v5}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCivTruce(II)I
+
+    move-result v2
+
+    const-string v3, ": "
+
+    if-lez v2, :cond_1
+
+    .line 245
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;
+
+    new-instance v5, Ljava/lang/StringBuilder;
+
+    invoke-direct {v5}, Ljava/lang/StringBuilder;-><init>()V
+
+    sget-object v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    const-string v7, "WeHaveATruceUntil"
+
+    invoke-virtual {v6, v7}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v6
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v3
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_HOVER_TITLE:Lcom/badlogic/gdx/graphics/Color;
+
+    invoke-direct {v2, v3, v5}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;-><init>(Ljava/lang/String;Lcom/badlogic/gdx/graphics/Color;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 246
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;
+
+    sget v3, Lage/of/civilizations2/jakowski/lukasz/GameCalendar;->TURNID:I
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget-object v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget v7, Lage/of/civilizations2/jakowski/lukasz/CFG;->PLAYER_TURN_ID:I
+
+    invoke-virtual {v6, v7}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getPlayer(I)Lage/of/civilizations2/jakowski/lukasz/Player;
+
+    move-result-object v6
+
+    invoke-virtual {v6}, Lage/of/civilizations2/jakowski/lukasz/Player;->getCivId()I
+
+    move-result v6
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v7
+
+    invoke-virtual {v5, v6, v7}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCivTruce(II)I
+
+    move-result v5
+
+    add-int/2addr v3, v5
+
+    invoke-static {v3}, Lage/of/civilizations2/jakowski/lukasz/GameCalendar;->getDate_ByTurnID(I)Ljava/lang/String;
+
+    move-result-object v3
+
+    invoke-direct {v2, v3}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;-><init>(Ljava/lang/String;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 247
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;
+
+    new-instance v3, Ljava/lang/StringBuilder;
+
+    const-string v5, " ["
+
+    invoke-direct {v3, v5}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    sget-object v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget-object v7, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget v8, Lage/of/civilizations2/jakowski/lukasz/CFG;->PLAYER_TURN_ID:I
+
+    invoke-virtual {v7, v8}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getPlayer(I)Lage/of/civilizations2/jakowski/lukasz/Player;
+
+    move-result-object v7
+
+    invoke-virtual {v7}, Lage/of/civilizations2/jakowski/lukasz/Player;->getCivId()I
+
+    move-result v7
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v8
+
+    invoke-virtual {v6, v7, v8}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCivTruce(II)I
+
+    move-result v6
+
+    const-string v7, "TurnsX"
+
+    invoke-virtual {v5, v7, v6}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;I)Ljava/lang/String;
+
+    move-result-object v5
+
+    invoke-virtual {v3, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v3
+
+    const/4 v5, 0x0
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/Menus/Z_Rest/GenerateFlag/mkU/NdlgcQAFjxIqVj;->fHlLiDsJOy:Ljava/lang/String;
+
+    invoke-virtual {v3, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v3
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_TEXT_GRAY_NS_HOVER:Lcom/badlogic/gdx/graphics/Color;
+
+    invoke-direct {v2, v3, v5}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;-><init>(Ljava/lang/String;Lcom/badlogic/gdx/graphics/Color;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 248
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Image_Big;
+
+    sget v3, Lage/of/civilizations2/jakowski/lukasz/Images;->diploTruce:I
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    invoke-direct {v2, v3, v5, v4}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Image_Big;-><init>(III)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 249
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Flag_Big;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v3
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    invoke-direct {v2, v3, v5, v4}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Flag_Big;-><init>(III)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 250
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;
+
+    invoke-direct {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;-><init>(Ljava/util/List;)V
+
+    invoke-interface {v0, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 251
+    invoke-interface {v1}, Ljava/util/List;->clear()V
+
+    goto/16 :goto_0
+
+    .line 253
+    :cond_1
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->PLAYER_TURN_ID:I
+
+    invoke-virtual {v5, v6}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getPlayer(I)Lage/of/civilizations2/jakowski/lukasz/Player;
+
+    move-result-object v5
+
+    invoke-virtual {v5}, Lage/of/civilizations2/jakowski/lukasz/Player;->getCivId()I
+
+    move-result v5
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v6
+
+    invoke-virtual {v2, v5, v6}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->canDeclareWar_TribalColonize_NeedsToBorder(II)Z
+
+    move-result v2
+
+    if-nez v2, :cond_2
+
+    .line 254
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    const-string v6, "YouMustBorderWithCivilization"
+
+    invoke-virtual {v5, v6}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v5
+
+    sget-object v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_NEGATIVE_2:Lcom/badlogic/gdx/graphics/Color;
+
+    invoke-direct {v2, v5, v6}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;-><init>(Ljava/lang/String;Lcom/badlogic/gdx/graphics/Color;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 255
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Image_Big;
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/Images;->diploWar:I
+
+    sget v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    invoke-direct {v2, v5, v6, v4}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Image_Big;-><init>(III)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 256
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Flag_Big;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v5
+
+    sget v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    invoke-direct {v2, v5, v6, v4}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Flag_Big;-><init>(III)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 257
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;
+
+    invoke-direct {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;-><init>(Ljava/util/List;)V
+
+    invoke-interface {v0, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 258
+    invoke-interface {v1}, Ljava/util/List;->clear()V
+
+    .line 260
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Space;
+
+    invoke-direct {v2}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Space;-><init>()V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 261
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;
+
+    invoke-direct {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;-><init>(Ljava/util/List;)V
+
+    invoke-interface {v0, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 262
+    invoke-interface {v1}, Ljava/util/List;->clear()V
+
+    .line 264
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Flag;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v5
+
+    invoke-direct {v2, v5}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Flag;-><init>(I)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 265
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text;
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v6
+
+    invoke-virtual {v5, v6}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v5
+
+    invoke-virtual {v5}, Lage/of/civilizations2/jakowski/lukasz/Civilization;->getCivName()Ljava/lang/String;
+
+    move-result-object v5
+
+    sget-object v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_TEXT_NUM_OF_PROVINCES:Lcom/badlogic/gdx/graphics/Color;
+
+    invoke-direct {v2, v5, v6}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text;-><init>(Ljava/lang/String;Lcom/badlogic/gdx/graphics/Color;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 266
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;
+
+    invoke-direct {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;-><init>(Ljava/util/List;)V
+
+    invoke-interface {v0, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 267
+    invoke-interface {v1}, Ljava/util/List;->clear()V
+
+    .line 269
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text;
+
+    new-instance v5, Ljava/lang/StringBuilder;
+
+    invoke-direct {v5}, Ljava/lang/StringBuilder;-><init>()V
+
+    sget-object v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    const-string v7, "Government"
+
+    invoke-virtual {v6, v7}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v6
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v3
+
+    invoke-direct {v2, v3}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text;-><init>(Ljava/lang/String;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 270
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text;
+
+    sget-object v3, Lage/of/civilizations2/jakowski/lukasz/CFG;->ideologiesMgr:Lage/of/civilizations2/jakowski/lukasz/IdeologiesManager;
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v6
+
+    invoke-virtual {v5, v6}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v5
+
+    invoke-virtual {v5}, Lage/of/civilizations2/jakowski/lukasz/Civilization;->getIdeology()I
+
+    move-result v5
+
+    invoke-virtual {v3, v5}, Lage/of/civilizations2/jakowski/lukasz/IdeologiesManager;->getIdeologyID(I)Lage/of/civilizations2/jakowski/lukasz/Ideology;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Lage/of/civilizations2/jakowski/lukasz/Ideology;->getName()Ljava/lang/String;
+
+    move-result-object v3
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->ideologiesMgr:Lage/of/civilizations2/jakowski/lukasz/IdeologiesManager;
+
+    sget-object v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v7
+
+    invoke-virtual {v6, v7}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v6
+
+    invoke-virtual {v6}, Lage/of/civilizations2/jakowski/lukasz/Civilization;->getIdeology()I
+
+    move-result v6
+
+    invoke-virtual {v5, v6}, Lage/of/civilizations2/jakowski/lukasz/IdeologiesManager;->getIdeologyID(I)Lage/of/civilizations2/jakowski/lukasz/Ideology;
+
+    move-result-object v5
+
+    invoke-virtual {v5}, Lage/of/civilizations2/jakowski/lukasz/Ideology;->getColor()Lcom/badlogic/gdx/graphics/Color;
+
+    move-result-object v5
+
+    invoke-direct {v2, v3, v5}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text;-><init>(Ljava/lang/String;Lcom/badlogic/gdx/graphics/Color;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 271
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Ideology;
+
+    sget-object v3, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v5
+
+    invoke-virtual {v3, v5}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Lage/of/civilizations2/jakowski/lukasz/Civilization;->getIdeology()I
+
+    move-result v3
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    invoke-direct {v2, v3, v5, v4}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Ideology;-><init>(III)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 272
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;
+
+    invoke-direct {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;-><init>(Ljava/util/List;)V
+
+    invoke-interface {v0, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 273
+    invoke-interface {v1}, Ljava/util/List;->clear()V
+
+    goto :goto_0
+
+    .line 276
+    :cond_2
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;
+
+    new-instance v5, Ljava/lang/StringBuilder;
+
+    invoke-direct {v5}, Ljava/lang/StringBuilder;-><init>()V
+
+    sget-object v6, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    const-string v7, "PrepareForTheWarAgainst"
+
+    invoke-virtual {v6, v7}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v6
+
+    invoke-virtual {v5, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v5
+
+    invoke-virtual {v5, v3}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v3
+
+    sget-object v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->COLOR_HOVER_TITLE:Lcom/badlogic/gdx/graphics/Color;
+
+    invoke-direct {v2, v3, v5}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;-><init>(Ljava/lang/String;Lcom/badlogic/gdx/graphics/Color;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 277
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Flag_Big;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v3
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    invoke-direct {v2, v3, v4, v5}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Flag_Big;-><init>(III)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 278
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;
+
+    sget-object v3, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v5
+
+    invoke-virtual {v3, v5}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCiv(I)Lage/of/civilizations2/jakowski/lukasz/Civilization;
+
+    move-result-object v3
+
+    invoke-virtual {v3}, Lage/of/civilizations2/jakowski/lukasz/Civilization;->getCivName()Ljava/lang/String;
+
+    move-result-object v3
+
+    invoke-direct {v2, v3}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Text_Big;-><init>(Ljava/lang/String;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 279
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Image_Big;
+
+    sget v3, Lage/of/civilizations2/jakowski/lukasz/Images;->diploWarPreparations:I
+
+    sget v5, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    invoke-direct {v2, v3, v5, v4}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Image_Big;-><init>(III)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 280
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;
+
+    invoke-direct {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;-><init>(Ljava/util/List;)V
+
+    invoke-interface {v0, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 281
+    invoke-interface {v1}, Ljava/util/List;->clear()V
+
+    .line 284
+    :goto_0
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Space;
+
+    invoke-direct {v2}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_Space;-><init>()V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 285
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;
+
+    invoke-direct {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;-><init>(Ljava/util/List;)V
+
+    invoke-interface {v0, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 286
+    invoke-interface {v1}, Ljava/util/List;->clear()V
+
+    .line 288
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_TextDesc;
+
+    sget-object v3, Lage/of/civilizations2/jakowski/lukasz/CFG;->lang:Lage/of/civilizations2/jakowski/lukasz/LangManager;
+
+    const-string v4, "PrepareForWarDesc"
+
+    invoke-virtual {v3, v4}, Lage/of/civilizations2/jakowski/lukasz/LangManager;->get(Ljava/lang/String;)Ljava/lang/String;
+
+    move-result-object v3
+
+    invoke-direct {v2, v3}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_2Type_TextDesc;-><init>(Ljava/lang/String;)V
+
+    invoke-interface {v1, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 289
+    new-instance v2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;
+
+    invoke-direct {v2, v1}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/MEHover_2E;-><init>(Ljava/util/List;)V
+
+    invoke-interface {v0, v2}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 290
+    invoke-interface {v1}, Ljava/util/List;->clear()V
+
+    .line 292
+    new-instance v1, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_v2;
+
+    invoke-direct {v1, v0}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover_v2;-><init>(Ljava/util/List;)V
+
+    iput-object v1, p0, Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions$4;->menuElemHover:Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover;
+
+    return-void
+.end method
+
+.method public drawMEH2(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;IIZ)V
+    .locals 1
+
+    .line 227
+    iget-object p3, p0, Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions$4;->menuElemHover:Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover;
+
+    if-eqz p3, :cond_0
+
+    .line 228
+    iget-object p3, p0, Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions$4;->menuElemHover:Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover;
+
+    iget-object p4, p0, Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions$4;->this$0:Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions;
+
+    invoke-virtual {p4}, Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions;->getPosX()I
+
+    move-result p4
+
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions$4;->getWidthE()I
+
+    move-result v0
+
+    add-int/2addr p4, v0
+
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->PADDING:I
+
+    add-int/2addr p4, v0
+
+    add-int/2addr p4, p2
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/Touch;->getMousePosY()I
+
+    move-result p2
+
+    invoke-interface {p3, p1, p4, p2}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover;->drawAlwaysBelowMEH(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;II)V
+
+    :cond_0
+    return-void
+.end method
+
+.method public getIsClickable()Z
+    .locals 3
+
+    .line 302
+    invoke-super {p0}, Lage/of/civilizations2/jakowski/lukasz/Button/Diplomacy/Action/Button_DiplomacyAction;->getIsClickable()Z
+
+    move-result v0
+
+    if-eqz v0, :cond_0
+
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/GameCalendar;->TURNID:I
+
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->WAR_CANT_BE_DECLARED_IN_FIRST_X_TURNS:I
+
+    if-le v0, v1, :cond_0
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget-object v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->core:Lage/of/civilizations2/jakowski/lukasz/Core/Core;
+
+    sget v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->PLAYER_TURN_ID:I
+
+    invoke-virtual {v1, v2}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getPlayer(I)Lage/of/civilizations2/jakowski/lukasz/Player;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Lage/of/civilizations2/jakowski/lukasz/Player;->getCivId()I
+
+    move-result v1
+
+    invoke-static {}, Lage/of/civilizations2/jakowski/lukasz/CFG;->getActiveCivInfoId()I
+
+    move-result v2
+
+    invoke-virtual {v0, v1, v2}, Lage/of/civilizations2/jakowski/lukasz/Core/Core;->getCivTruce(II)I
+
+    move-result v0
+
+    if-nez v0, :cond_0
+
+    const/4 v0, 0x1
+
+    goto :goto_0
+
+    :cond_0
+    const/4 v0, 0x0
+
+    :goto_0
+    return v0
+.end method
+
+.method public getSFXElem()I
+    .locals 1
+
+    .line 307
+    invoke-virtual {p0}, Lage/of/civilizations2/jakowski/lukasz/Menus/Civilization/Menu_InGame_Civ_Actions$4;->getIsClickable()Z
+
+    move-result v0
+
+    if-eqz v0, :cond_0
+
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/SFXManager;->SFX_WAR:I
+
+    goto :goto_0
+
+    :cond_0
+    invoke-super {p0}, Lage/of/civilizations2/jakowski/lukasz/Button/Diplomacy/Action/Button_DiplomacyAction;->getSFXElem()I
+
+    move-result v0
+
+    :goto_0
+    return v0
+.end method

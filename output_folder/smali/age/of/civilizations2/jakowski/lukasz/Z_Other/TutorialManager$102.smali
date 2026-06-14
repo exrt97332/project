@@ -1,0 +1,323 @@
+.class Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;
+.super Ljava/lang/Object;
+.source "TutorialManager.java"
+
+# interfaces
+.implements Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$TutStep;
+
+
+# annotations
+.annotation system Ldalvik/annotation/EnclosingMethod;
+    value = Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->updateDrawTutorial(Z)V
+.end annotation
+
+.annotation system Ldalvik/annotation/InnerClass;
+    accessFlags = 0x0
+    name = null
+.end annotation
+
+
+# instance fields
+.field final synthetic this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+
+# direct methods
+.method constructor <init>(Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;)V
+    .locals 0
+
+    .line 3704
+    iput-object p1, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+
+    return-void
+.end method
+
+
+# virtual methods
+.method public action(Lage/of/civilizations2/jakowski/lukasz/Z_Other/Tutorial_ActionType;)Z
+    .locals 3
+
+    .line 3728
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/Tutorial_ActionType;->NEXT_TURN:Lage/of/civilizations2/jakowski/lukasz/Z_Other/Tutorial_ActionType;
+
+    const/4 v1, 0x0
+
+    if-ne p1, v0, :cond_0
+
+    sget-object p1, Lage/of/civilizations2/jakowski/lukasz/CFG;->gameAction:Lage/of/civilizations2/jakowski/lukasz/GameAction;
+
+    invoke-virtual {p1}, Lage/of/civilizations2/jakowski/lukasz/GameAction;->getActiveTurnStateID()Lage/of/civilizations2/jakowski/lukasz/GameAction$TurnStates;
+
+    move-result-object p1
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/GameAction$TurnStates;->INPUT_ORDERS:Lage/of/civilizations2/jakowski/lukasz/GameAction$TurnStates;
+
+    if-ne p1, v0, :cond_0
+
+    .line 3729
+    iget-object p1, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    iget v0, p1, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->STEP_ID:I
+
+    const/4 v2, 0x1
+
+    add-int/2addr v0, v2
+
+    iput v0, p1, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->STEP_ID:I
+
+    .line 3730
+    iget-object p1, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    iget-boolean v0, p1, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->IN_TUTORIAL:Z
+
+    invoke-virtual {p1, v0}, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->updateDrawTutorial(Z)V
+
+    .line 3732
+    sget-object p1, Lage/of/civilizations2/jakowski/lukasz/CFG;->menus:Lage/of/civilizations2/jakowski/lukasz/MenuManager;
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/View;->eGAMES:Lage/of/civilizations2/jakowski/lukasz/View;
+
+    invoke-virtual {p1, v0}, Lage/of/civilizations2/jakowski/lukasz/MenuManager;->setMenuID(Lage/of/civilizations2/jakowski/lukasz/View;)V
+
+    .line 3734
+    iget-object p1, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    iput-boolean v1, p1, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->IN_TUTORIAL:Z
+
+    .line 3735
+    sput-boolean v1, Lage/of/civilizations2/jakowski/lukasz/Save/SaveGameManager;->gameCanBeContinued:Z
+
+    return v2
+
+    :cond_0
+    return v1
+.end method
+
+.method public draw(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;II)V
+    .locals 3
+
+    .line 3707
+    sget-object p2, Lage/of/civilizations2/jakowski/lukasz/CFG;->menus:Lage/of/civilizations2/jakowski/lukasz/MenuManager;
+
+    invoke-virtual {p2}, Lage/of/civilizations2/jakowski/lukasz/MenuManager;->getInGameView()Z
+
+    move-result p2
+
+    if-eqz p2, :cond_2
+
+    sget-object p2, Lage/of/civilizations2/jakowski/lukasz/CFG;->gameAction:Lage/of/civilizations2/jakowski/lukasz/GameAction;
+
+    invoke-virtual {p2}, Lage/of/civilizations2/jakowski/lukasz/GameAction;->getActiveTurnStateID()Lage/of/civilizations2/jakowski/lukasz/GameAction$TurnStates;
+
+    move-result-object p2
+
+    sget-object p3, Lage/of/civilizations2/jakowski/lukasz/GameAction$TurnStates;->INPUT_ORDERS:Lage/of/civilizations2/jakowski/lukasz/GameAction$TurnStates;
+
+    if-ne p2, p3, :cond_2
+
+    .line 3710
+    :try_start_0
+    iget-object p2, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    invoke-static {p2}, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->access$200(Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;)Ljava/util/List;
+
+    move-result-object p2
+
+    const/4 p3, 0x0
+
+    invoke-interface {p2, p3}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object p2
+
+    check-cast p2, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover;
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->menus:Lage/of/civilizations2/jakowski/lukasz/MenuManager;
+
+    invoke-virtual {v0}, Lage/of/civilizations2/jakowski/lukasz/MenuManager;->getInGame_ProvincemMore_Visible()Z
+
+    move-result v0
+
+    if-nez v0, :cond_1
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->menus:Lage/of/civilizations2/jakowski/lukasz/MenuManager;
+
+    invoke-virtual {v0}, Lage/of/civilizations2/jakowski/lukasz/MenuManager;->getInGame_CivInfo()Lage/of/civilizations2/jakowski/lukasz/Menu;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lage/of/civilizations2/jakowski/lukasz/Menu;->getVisibleM()Z
+
+    move-result v0
+
+    if-eqz v0, :cond_0
+
+    goto :goto_0
+
+    :cond_0
+    iget-object v0, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    invoke-static {v0}, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->access$000(Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;)I
+
+    move-result v0
+
+    goto :goto_1
+
+    :cond_1
+    :goto_0
+    sget v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->CIV_INFO_MENU_WIDTH:I
+
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    mul-int/lit8 v1, v1, 0x2
+
+    add-int/2addr v0, v1
+
+    :goto_1
+    iget-object v1, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    invoke-static {v1}, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->access$100(Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;)I
+
+    move-result v1
+
+    invoke-interface {p2, p1, v0, v1}, Lage/of/civilizations2/jakowski/lukasz/MenuE_HoverP/ME_Hover;->drawHoverWithoutAnim(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;II)V
+
+    .line 3713
+    iget-object p2, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    sget-object v0, Lage/of/civilizations2/jakowski/lukasz/CFG;->menus:Lage/of/civilizations2/jakowski/lukasz/MenuManager;
+
+    invoke-virtual {v0}, Lage/of/civilizations2/jakowski/lukasz/MenuManager;->getInGameProvInfo()Lage/of/civilizations2/jakowski/lukasz/Menu;
+
+    move-result-object v0
+
+    invoke-virtual {v0}, Lage/of/civilizations2/jakowski/lukasz/Menu;->getPosX()I
+
+    move-result v0
+
+    sget-object v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->menus:Lage/of/civilizations2/jakowski/lukasz/MenuManager;
+
+    invoke-virtual {v1}, Lage/of/civilizations2/jakowski/lukasz/MenuManager;->getInGameProvInfo()Lage/of/civilizations2/jakowski/lukasz/Menu;
+
+    move-result-object v1
+
+    invoke-virtual {v1, p3}, Lage/of/civilizations2/jakowski/lukasz/Menu;->getMenuElem(I)Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;->getPosXE()I
+
+    move-result v1
+
+    add-int/2addr v0, v1
+
+    sget v1, Lage/of/civilizations2/jakowski/lukasz/CFG;->PADD:I
+
+    neg-int v1, v1
+
+    div-int/lit8 v1, v1, 0x2
+
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->menus:Lage/of/civilizations2/jakowski/lukasz/MenuManager;
+
+    invoke-virtual {v2}, Lage/of/civilizations2/jakowski/lukasz/MenuManager;->getInGameProvInfo()Lage/of/civilizations2/jakowski/lukasz/Menu;
+
+    move-result-object v2
+
+    invoke-virtual {v2}, Lage/of/civilizations2/jakowski/lukasz/Menu;->getPosY()I
+
+    move-result v2
+
+    add-int/2addr v1, v2
+
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->menus:Lage/of/civilizations2/jakowski/lukasz/MenuManager;
+
+    invoke-virtual {v2}, Lage/of/civilizations2/jakowski/lukasz/MenuManager;->getInGameProvInfo()Lage/of/civilizations2/jakowski/lukasz/Menu;
+
+    move-result-object v2
+
+    invoke-virtual {v2, p3}, Lage/of/civilizations2/jakowski/lukasz/Menu;->getMenuElem(I)Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;
+
+    move-result-object v2
+
+    invoke-virtual {v2}, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;->getPosY()I
+
+    move-result v2
+
+    add-int/2addr v1, v2
+
+    sget-object v2, Lage/of/civilizations2/jakowski/lukasz/CFG;->menus:Lage/of/civilizations2/jakowski/lukasz/MenuManager;
+
+    invoke-virtual {v2}, Lage/of/civilizations2/jakowski/lukasz/MenuManager;->getInGameProvInfo()Lage/of/civilizations2/jakowski/lukasz/Menu;
+
+    move-result-object v2
+
+    invoke-virtual {v2, p3}, Lage/of/civilizations2/jakowski/lukasz/Menu;->getMenuElem(I)Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;
+
+    move-result-object v2
+
+    invoke-virtual {v2}, Lage/of/civilizations2/jakowski/lukasz/Button/MenuElemUI;->getWidthE()I
+
+    move-result v2
+
+    invoke-virtual {p2, p1, v0, v1, v2}, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->drawLine(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;III)V
+
+    .line 3715
+    :goto_2
+    iget-object p2, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    invoke-static {p2}, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->access$300(Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;)Ljava/util/List;
+
+    move-result-object p2
+
+    iget-object v0, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    iget v0, v0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->INNER_STEP:I
+
+    invoke-interface {p2, v0}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object p2
+
+    check-cast p2, Ljava/util/List;
+
+    invoke-interface {p2}, Ljava/util/List;->size()I
+
+    move-result p2
+
+    if-ge p3, p2, :cond_2
+
+    .line 3716
+    iget-object p2, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    invoke-static {p2}, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->access$300(Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;)Ljava/util/List;
+
+    move-result-object p2
+
+    iget-object v0, p0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager$102;->this$0:Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;
+
+    iget v0, v0, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialManager;->INNER_STEP:I
+
+    invoke-interface {p2, v0}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object p2
+
+    check-cast p2, Ljava/util/List;
+
+    invoke-interface {p2, p3}, Ljava/util/List;->get(I)Ljava/lang/Object;
+
+    move-result-object p2
+
+    check-cast p2, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialBox;
+
+    invoke-virtual {p2, p1}, Lage/of/civilizations2/jakowski/lukasz/Z_Other/TutorialBox;->draw(Lcom/badlogic/gdx/graphics/g2d/SpriteBatch;)V
+    :try_end_0
+    .catch Ljava/lang/IndexOutOfBoundsException; {:try_start_0 .. :try_end_0} :catch_0
+    .catch Ljava/lang/NullPointerException; {:try_start_0 .. :try_end_0} :catch_0
+
+    add-int/lit8 p3, p3, 0x1
+
+    goto :goto_2
+
+    :catch_0
+    :cond_2
+    return-void
+.end method
