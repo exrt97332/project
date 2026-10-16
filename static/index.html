@@ -1744,29 +1744,21 @@
     #policy-island.pi-government .gov-tax-grid {
       grid-template-columns: 1fr;
     }
-    #policy-island.pi-population .pi-pop-welfare {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-      max-height: none;
-      overflow: visible;
-      padding-right: 0;
-    }
-    #policy-island.pi-companies .pi-points {
+    #policy-island:is(.pi-companies, .pi-population) .pi-points {
       display: none !important;
     }
-    #policy-island.pi-companies .pi-co-policy-stack {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-policy-stack {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
     }
-    #policy-island.pi-companies .pi-co-tabs {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-tabs {
       display: flex;
       gap: 0.15rem;
       border-bottom: 1px solid rgba(255,255,255,0.08);
       margin: -0.1rem 0 0.15rem;
     }
-    #policy-island.pi-companies .pi-co-tab {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-tab {
       flex: 1;
       border: 0;
       background: transparent;
@@ -1779,51 +1771,51 @@
       border-bottom: 2px solid transparent;
       margin-bottom: -1px;
     }
-    #policy-island.pi-companies .pi-co-tab.on {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-tab.on {
       color: var(--fill-mid);
       border-bottom-color: var(--fill-mid);
     }
-    #policy-island.pi-companies .pi-co-card {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-card {
       border-radius: 18px;
       background: rgba(255,255,255,0.045);
       border: 1px solid rgba(255,255,255,0.06);
       padding: 0.85rem 0.9rem;
     }
-    #policy-island.pi-companies .pi-co-card + .pi-co-card { margin-top: 0.55rem; }
-    #policy-island.pi-companies .pi-co-card-title {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-card + .pi-co-card { margin-top: 0.55rem; }
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-card-title {
       font-size: 15px;
       font-weight: 800;
       color: var(--text-bright);
       letter-spacing: -0.02em;
       margin: 0 0 0.15rem;
     }
-    #policy-island.pi-companies .pi-co-card-hint {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-card-hint {
       font-size: 11.5px;
       color: var(--text-faint);
       margin: 0 0 0.7rem;
       line-height: 1.45;
     }
-    #policy-island.pi-companies .pi-pol-guide {
+    #policy-island:is(.pi-companies, .pi-population) .pi-pol-guide {
       cursor: help;
     }
-    #policy-island.pi-companies .pi-pol-guide:hover {
+    #policy-island:is(.pi-companies, .pi-population) .pi-pol-guide:hover {
       color: var(--accent);
     }
-    #policy-island.pi-companies .pi-co-apply-host {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-apply-host {
       display: block;
       margin-top: 0.65rem;
     }
-    #policy-island.pi-companies .pi-co-apply-host .pi-co-apply {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-apply-host .pi-co-apply {
       margin-top: 0;
       width: 100%;
     }
-    #policy-island.pi-companies .pi-co-type-blocks {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-blocks {
       margin: 0.25rem 0 0.35rem;
       padding: 0.45rem 0.1rem 0.7rem;
       overflow-x: auto;
       overflow-y: hidden;
     }
-    #policy-island.pi-companies .pi-co-type-blocks .finance-block.co-block {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-blocks .finance-block.co-block {
       width: 120px;
       min-width: 120px;
       max-width: 132px;
@@ -1834,15 +1826,15 @@
       appearance: none;
       -webkit-appearance: none;
     }
-    #policy-island.pi-companies .pi-co-type-blocks .finance-block.co-block:hover,
-    #policy-island.pi-companies .pi-co-type-blocks .finance-block.co-block.on {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-blocks .finance-block.co-block:hover,
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-blocks .finance-block.co-block.on {
       transform: none;
     }
-    #policy-island.pi-companies .pi-co-type-blocks .finance-block.co-block:hover {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-blocks .finance-block.co-block:hover {
       border-color: rgba(99, 102, 241, 0.45);
       box-shadow: 0 6px 18px rgba(99, 102, 241, 0.14);
     }
-    #policy-island.pi-companies .pi-co-type-blocks .finance-block .fb-icon {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-blocks .finance-block .fb-icon {
       width: 32px;
       height: 32px;
       margin-bottom: 0.45rem;
@@ -1851,21 +1843,21 @@
       align-items: center;
       justify-content: center;
     }
-    #policy-island.pi-companies .pi-co-type-blocks .finance-block .fb-icon svg {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-blocks .finance-block .fb-icon svg {
       width: 16px;
       height: 16px;
     }
-    #policy-island.pi-companies .pi-co-type-blocks .finance-block .fb-title {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-blocks .finance-block .fb-title {
       font-size: 12.5px;
     }
-    #policy-island.pi-companies .pi-co-type-blocks .finance-block .fb-sub {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-blocks .finance-block .fb-sub {
       font-size: 10.5px;
     }
-    #policy-island.pi-companies .pi-co-type-blocks .finance-block .fb-val {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-blocks .finance-block .fb-val {
       font-size: 13px;
       margin-top: 0.4rem;
     }
-    #policy-island.pi-companies .pi-co-type-count {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-type-count {
       font-size: 11px;
       font-weight: 700;
       color: var(--text-faint);
@@ -1953,53 +1945,53 @@
     .asset-bar-tip.is-policy-guide .abt-fx.down i { color: var(--down); }
     .asset-bar-tip.is-policy-guide .abt-fx.up svg,
     .asset-bar-tip.is-policy-guide .abt-fx.up i { color: var(--up); }
-    #policy-island.pi-companies .pi-co-slider-row {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-slider-row {
       margin-bottom: 0.85rem;
     }
-    #policy-island.pi-companies .pi-co-slider-row:last-child { margin-bottom: 0; }
-    #policy-island.pi-companies .pi-co-slider-head {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-slider-row:last-child { margin-bottom: 0; }
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-slider-head {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       gap: 0.5rem;
       margin-bottom: 0.28rem;
     }
-    #policy-island.pi-companies .pi-co-slider-head .lab {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-slider-head .lab {
       font-size: 13px;
       font-weight: 700;
       color: var(--text-dim);
       letter-spacing: -0.01em;
     }
-    #policy-island.pi-companies .pi-co-slider-head .val {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-slider-head .val {
       font-size: 13px;
       font-weight: 800;
       color: #6366f1;
       font-variant-numeric: tabular-nums;
     }
-    #policy-island.pi-companies .pi-co-slider-row input[type=range] {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-slider-row input[type=range] {
       width: 100%;
       accent-color: var(--fill-mid);
     }
-    #policy-island.pi-companies .pi-co-slider-hint {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-slider-hint {
       font-size: 11px;
       color: var(--text-faint);
       margin-top: 0.2rem;
       line-height: 1.35;
     }
-    #policy-island.pi-companies .pi-co-name {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-name {
       font-size: 16px;
       font-weight: 800;
       color: var(--text-bright);
       letter-spacing: -0.02em;
       margin-bottom: 0.25rem;
     }
-    #policy-island.pi-companies .pi-co-tags {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 0.3rem;
       margin-bottom: 0.75rem;
     }
-    #policy-island.pi-companies .pi-co-tag {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-tag {
       font-size: 11px;
       font-weight: 700;
       padding: 0.18rem 0.45rem;
@@ -2007,11 +1999,11 @@
       background: rgba(99, 102, 241, 0.12);
       color: #a5b4fc;
     }
-    #policy-island.pi-companies .pi-co-tag.bad {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-tag.bad {
       background: rgba(239,68,68,0.15);
       color: #fca5a5;
     }
-    #policy-island.pi-companies .pi-co-apply {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-apply {
       width: 100%;
       margin-top: 0.55rem;
       border: 0;
@@ -2024,19 +2016,19 @@
       color: #fff;
       cursor: pointer;
     }
-    #policy-island.pi-companies .pi-co-apply:disabled {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-apply:disabled {
       opacity: 0.45;
       cursor: not-allowed;
     }
-    #policy-island.pi-companies .pi-co-apply.ghost {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-apply.ghost {
       background: rgba(255,255,255,0.08);
       color: var(--text-bright);
     }
-    #policy-island.pi-companies .pi-co-apply.warn {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-apply.warn {
       background: rgba(245,158,11,0.9);
       color: #111;
     }
-    #policy-island.pi-companies .pi-co-select {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-select {
       width: 100%;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.1);
@@ -2047,12 +2039,12 @@
       font-weight: 600;
       margin-bottom: 0.55rem;
     }
-    #policy-island.pi-companies .pi-co-seg {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-seg {
       display: flex;
       gap: 0.35rem;
       margin-bottom: 0.65rem;
     }
-    #policy-island.pi-companies .pi-co-seg button {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-seg button {
       flex: 1;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.1);
@@ -2064,12 +2056,12 @@
       cursor: pointer;
       line-height: 1.25;
     }
-    #policy-island.pi-companies .pi-co-seg button.on {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-seg button.on {
       background: rgba(99, 102, 241, 0.22);
       border-color: rgba(99, 102, 241, 0.55);
       color: #a5b4fc;
     }
-    #policy-island.pi-companies .pi-co-empty {
+    #policy-island:is(.pi-companies, .pi-population) .pi-co-empty {
       color: var(--text-faint);
       font-size: 12.5px;
       line-height: 1.45;
@@ -23061,6 +23053,8 @@
     let cachedOccSubsidies = {};
     let cachedSubsidyLabels = {};
     let companyPolicyTab = "national"; // national | industry | company
+    let populationPolicyTab = "redistrib"; // redistrib | welfare | labor | edu_med
+    let populationPolicyServerData = {};
     let industryOccSelected = [];
     let industryStratSelected = [];
 
@@ -23291,6 +23285,155 @@
         effects: [
           { icon: "building", text: "국유 기업이 되면 운영·소유 구조가 바뀝니다", tone: "" },
           { icon: "trending-down", text: "시간이 지나면 기술·효율 배율이 점차 낮아질 수 있습니다", tone: "down" },
+        ],
+      },
+      bracket_low: {
+        icon: "scale",
+        category: "재분배",
+        ppAction: "welfare",
+        summary: "저소득층(중위 0.8배 미만)의 필요소비 대비 현금 지원율입니다.",
+        effects: [
+          { icon: "wallet", text: "해당 분위만 지급 · 숨은 배수는 없습니다", tone: "up" },
+          { icon: "landmark", text: "재정 상한 초과 시 전 항목이 비례 삭감됩니다", tone: "cost" },
+        ],
+      },
+      bracket_mid: {
+        icon: "scale",
+        category: "재분배",
+        ppAction: "welfare",
+        summary: "중산층(중위 0.8~1.25배)의 필요소비 대비 현금 지원율입니다.",
+        effects: [
+          { icon: "users", text: "중산층 가계 현금 여력이 커집니다", tone: "up" },
+          { icon: "landmark", text: "비율이 높을수록 국고 부담이 커집니다", tone: "cost" },
+        ],
+      },
+      bracket_high: {
+        icon: "scale",
+        category: "재분배",
+        ppAction: "welfare",
+        summary: "고소득층(중위 1.25배 초과)의 필요소비 대비 현금 지원율입니다.",
+        effects: [
+          { icon: "trending-down", text: "보통 낮게 두어 재분배 효과를 키웁니다", tone: "" },
+          { icon: "landmark", text: "국고에서 직접 나갑니다", tone: "cost" },
+        ],
+      },
+      basic_guarantee: {
+        icon: "hand-heart",
+        category: "복지",
+        ppAction: "welfare",
+        summary: "저소득층의 미충족 소비 부족분만 국고로 메웁니다.",
+        effects: [
+          { icon: "wallet", text: "저소득(복지 분위)에만 적용됩니다", tone: "up" },
+          { icon: "landmark", text: "청구액이 재정 상한을 넘으면 지급률이 깎입니다", tone: "cost" },
+        ],
+      },
+      support_youth: {
+        icon: "graduation-cap",
+        category: "복지",
+        ppAction: "welfare",
+        summary: "청년 버킷의 생애주기 수요 필요액 대비 가산 지원입니다.",
+        effects: [
+          { icon: "users", text: "청년층 저축·소비 여력이 커집니다", tone: "up" },
+          { icon: "landmark", text: "소득배수 없이 합산됩니다", tone: "" },
+        ],
+      },
+      support_working: {
+        icon: "briefcase",
+        category: "복지",
+        ppAction: "welfare",
+        summary: "근로 연령대 버킷의 수요 필요액 대비 가산 지원입니다.",
+        effects: [
+          { icon: "heart", text: "중년층 생활 안정에 도움이 됩니다", tone: "up" },
+          { icon: "landmark", text: "실업 가산은 실업수당 슬라이더로 분리됐습니다", tone: "" },
+        ],
+      },
+      support_senior: {
+        icon: "heart-pulse",
+        category: "복지",
+        ppAction: "welfare",
+        summary: "노인 버킷의 수요 필요액 대비 가산 지원입니다.",
+        effects: [
+          { icon: "shield", text: "노후 소득 부담을 완화합니다", tone: "up" },
+          { icon: "landmark", text: "고령화가 심할수록 재정 부담이 커집니다", tone: "cost" },
+        ],
+      },
+      fertility_support: {
+        icon: "baby",
+        category: "복지",
+        ppAction: "welfare",
+        summary: "출산·양육 관련 지원 강도를 올립니다.",
+        effects: [
+          { icon: "trending-up", text: "출산 유인이 조금 더 커질 수 있습니다", tone: "up" },
+          { icon: "landmark", text: "지원금은 국고에서 나갑니다", tone: "cost" },
+        ],
+      },
+      retire_age: {
+        icon: "clock",
+        category: "복지",
+        summary: "법정 정년 연령을 60~70세로 조정합니다.",
+        effects: [
+          { icon: "briefcase", text: "정년이 높으면 근로 기간이 길어집니다", tone: "" },
+          { icon: "users", text: "노동공급·노인 복지 버킷에 영향을 줍니다", tone: "" },
+        ],
+      },
+      housing_relief: {
+        icon: "home",
+        category: "복지",
+        ppAction: "welfare",
+        summary: "주거 need 충족도를 보정해 주거 부담 여론을 완화합니다.",
+        effects: [
+          { icon: "building-2", text: "현금 이전이 아니라 충족도·여론에 반영됩니다", tone: "up" },
+          { icon: "gavel", text: "정책점 유지비(강도)에만 영향을 줍니다", tone: "cost" },
+        ],
+      },
+      unemployment_benefit: {
+        icon: "user-x",
+        category: "노동",
+        ppAction: "welfare",
+        summary: "실업 인구에 기준소비×실업수당 비율만큼 현금 지급합니다.",
+        effects: [
+          { icon: "wallet", text: "실업 가구의 소비 여력이 커집니다", tone: "up" },
+          { icon: "landmark", text: "국고 청구 · 재정 상한에 포함됩니다", tone: "cost" },
+        ],
+      },
+      job_training: {
+        icon: "wrench",
+        category: "노동",
+        ppAction: "welfare",
+        summary: "실업자 직업훈련 — 훈련비 청구와 노동 효율 가산입니다.",
+        effects: [
+          { icon: "trending-up", text: "기업 생산의 노동 fill이 소폭 올라갑니다", tone: "up" },
+          { icon: "landmark", text: "훈련비는 국고에서 나갑니다", tone: "cost" },
+        ],
+      },
+      min_wage: {
+        icon: "banknote",
+        category: "노동",
+        ppAction: "min_wage",
+        summary: "법정 최저임금을 설정합니다. 노동시장 정책과 동일 API입니다.",
+        effects: [
+          { icon: "briefcase", text: "저임금 직종의 임금 하한으로 작용합니다", tone: "up" },
+          { icon: "trending-down", text: "너무 높으면 고용·기업 비용에 부담이 됩니다", tone: "down" },
+        ],
+      },
+      education_support: {
+        icon: "book-open",
+        category: "교육·의료",
+        ppAction: "welfare",
+        summary: "교육 충족도 보너스와 교육 부족분 현금 보조입니다.",
+        effects: [
+          { icon: "graduation-cap", text: "교육 need 충족도가 올라갑니다", tone: "up" },
+          { icon: "landmark", text: "부족분 보조는 국고 청구에 포함됩니다", tone: "cost" },
+        ],
+      },
+      medical_support: {
+        icon: "stethoscope",
+        category: "교육·의료",
+        ppAction: "welfare",
+        summary: "의료 충족도 보너스와 의료 부족분 현금 보조입니다.",
+        effects: [
+          { icon: "heart-pulse", text: "의료 need 충족도가 올라갑니다", tone: "up" },
+          { icon: "landmark", text: "부족분 보조는 국고 청구에 포함됩니다", tone: "cost" },
         ],
       },
     };
@@ -23666,6 +23809,7 @@
       let show;
       if (opts.fmt === "cap") show = val <= 0 ? "무제한" : ("£" + Number(val).toLocaleString());
       else if (opts.fmt === "weeks") show = val.toFixed(0) + "주";
+      else if (opts.fmt === "age") show = val.toFixed(0) + "세";
       else show = val.toFixed(0) + suffix;
       const fmtAttr = opts.fmt ? ` data-fmt="${opts.fmt}"` : "";
       const guideKey = opts.guideKey || "";
@@ -23688,6 +23832,7 @@
         const fmt = (v) => {
           if (inp.dataset.fmt === "cap") return Number(v) <= 0 ? "무제한" : ("£" + Number(v).toLocaleString());
           if (inp.dataset.fmt === "weeks") return Number(v).toFixed(0) + "주";
+          if (inp.dataset.fmt === "age") return Number(v).toFixed(0) + "세";
           return Number(v).toFixed(0) + "%";
         };
         inp.oninput = () => { if (valEl) valEl.textContent = fmt(inp.value); };
@@ -24304,130 +24449,383 @@
     });
 
 
-    function renderPopulationPolicyIsland(d) {
-      const el = document.getElementById("policy-island-body");
-      if (!el) return;
-      const basic = Number(d?.pop_basic_income_support_pct ?? 0);
-      const low = Number(d?.pop_universal_support_low_pct ?? 0);
-      const mid = Number(d?.pop_universal_support_mid_pct ?? 0);
-      const high = Number(d?.pop_universal_support_high_pct ?? 0);
-      el.innerHTML = `
-        <div class="pi-pop-welfare">
-          <div class="pi-call-title">기초 수급 지원금</div>
-          <p class="pi-hint" style="margin:0 0 0.4rem">충족 수요를 못 맞춘 인구층에게 부족분(수요 필요액 × 미충족률)의 일부를 보조금으로 지급합니다.</p>
-          <div class="fin-equity-slider-wrap">
-            <div class="fin-equity-slider-head">
-              <span class="fin-eq-label">부족분 커버율</span>
-              <span class="fin-eq-val" id="pi-pop-basic-val">${basic.toFixed(0)}%</span>
-            </div>
-            <input type="range" id="pi-pop-basic-slider" min="0" max="100" step="1" value="${basic}">
-            <div class="fin-equity-slider-scale"><span>0%</span><span>50%</span><span>100%</span></div>
-          </div>
-          <div class="pi-call-divider"></div>
-          <div class="pi-call-title">소득수준별 보편 지원금</div>
-          <p class="pi-hint" style="margin:0 0 0.4rem">소득세 분위(저소득·중산층·고소득)별로 수요 필요액의 0~200%를 보편 지급합니다.</p>
-          <div class="fin-equity-slider-wrap">
-            <div class="fin-equity-slider-head">
-              <span class="fin-eq-label">저소득</span>
-              <span class="fin-eq-val" id="pi-pop-uni-low-val">${low.toFixed(0)}%</span>
-            </div>
-            <input type="range" id="pi-pop-uni-low-slider" min="0" max="200" step="1" value="${low}">
-            <div class="fin-equity-slider-scale"><span>0%</span><span>100%</span><span>200%</span></div>
-          </div>
-          <div class="fin-equity-slider-wrap">
-            <div class="fin-equity-slider-head">
-              <span class="fin-eq-label">중산층</span>
-              <span class="fin-eq-val" id="pi-pop-uni-mid-val">${mid.toFixed(0)}%</span>
-            </div>
-            <input type="range" id="pi-pop-uni-mid-slider" min="0" max="200" step="1" value="${mid}">
-            <div class="fin-equity-slider-scale"><span>0%</span><span>100%</span><span>200%</span></div>
-          </div>
-          <div class="fin-equity-slider-wrap">
-            <div class="fin-equity-slider-head">
-              <span class="fin-eq-label">고소득</span>
-              <span class="fin-eq-val" id="pi-pop-uni-high-val">${high.toFixed(0)}%</span>
-            </div>
-            <input type="range" id="pi-pop-uni-high-slider" min="0" max="200" step="1" value="${high}">
-            <div class="fin-equity-slider-scale"><span>0%</span><span>100%</span><span>200%</span></div>
-          </div>
-        </div>`;
-      bindPopulationWelfareSliders();
+    function readPopWelfarePayload(root) {
+      const num = (key, lo, hi, fallback) => {
+        const el = root.querySelector(`input[data-key="${key}"]`);
+        const v = Number(el ? el.value : fallback);
+        return Math.max(lo, Math.min(hi, Number.isFinite(v) ? v : fallback));
+      };
+      const mwEl = root.querySelector('input[data-key="min_wage"]');
+      let minWage = null;
+      if (mwEl) {
+        const raw = Number(mwEl.value);
+        minWage = Number.isFinite(raw) && raw > 0 ? raw : null;
+      }
+      return {
+        bracket_support_low_pct: num("bracket_support_low_pct", 0, 200, 0),
+        bracket_support_mid_pct: num("bracket_support_mid_pct", 0, 200, 0),
+        bracket_support_high_pct: num("bracket_support_high_pct", 0, 200, 0),
+        basic_guarantee_pct: num("basic_guarantee_pct", 0, 100, 0),
+        support_youth_pct: num("support_youth_pct", 0, 200, 0),
+        support_working_pct: num("support_working_pct", 0, 200, 0),
+        support_senior_pct: num("support_senior_pct", 0, 200, 0),
+        fertility_support_pct: num("fertility_support_pct", 0, 100, 0),
+        retire_age: num("retire_age", 60, 70, 65),
+        housing_relief_pct: num("housing_relief_pct", 0, 100, 0),
+        unemployment_benefit_pct: num("unemployment_benefit_pct", 0, 200, 0),
+        job_training_pct: num("job_training_pct", 0, 100, 0),
+        education_support_pct: num("education_support_pct", 0, 100, 0),
+        medical_support_pct: num("medical_support_pct", 0, 100, 0),
+        min_wage: minWage,
+      };
     }
 
-    function bindPopulationWelfareSliders() {
-      const specs = [
-        { id: "pi-pop-basic-slider", val: "pi-pop-basic-val", key: "basic_income_support_pct", max: 100 },
-        { id: "pi-pop-uni-low-slider", val: "pi-pop-uni-low-val", key: "universal_support_low_pct", max: 200 },
-        { id: "pi-pop-uni-mid-slider", val: "pi-pop-uni-mid-val", key: "universal_support_mid_pct", max: 200 },
-        { id: "pi-pop-uni-high-slider", val: "pi-pop-uni-high-val", key: "universal_support_high_pct", max: 200 },
+    function popWelfareIntensityFromPayload(p) {
+      return (
+        Number(p.bracket_support_low_pct || 0)
+        + Number(p.bracket_support_mid_pct || 0)
+        + Number(p.bracket_support_high_pct || 0)
+        + Number(p.basic_guarantee_pct || 0)
+        + Number(p.support_youth_pct || 0)
+        + Number(p.support_working_pct || 0)
+        + Number(p.support_senior_pct || 0)
+        + Number(p.unemployment_benefit_pct || 0)
+        + Number(p.fertility_support_pct || 0) * 0.5
+        + Number(p.housing_relief_pct || 0) * 0.5
+        + Number(p.job_training_pct || 0) * 0.5
+        + Number(p.education_support_pct || 0) * 0.5
+        + Number(p.medical_support_pct || 0) * 0.5
+      );
+    }
+
+    function calcPopWelfareApplyPlan(root, d) {
+      const next = readPopWelfarePayload(root);
+      const cur = {
+        bracket_support_low_pct: Number(d?.pop_bracket_support_low_pct ?? 0),
+        bracket_support_mid_pct: Number(d?.pop_bracket_support_mid_pct ?? 0),
+        bracket_support_high_pct: Number(d?.pop_bracket_support_high_pct ?? 0),
+        basic_guarantee_pct: Number(d?.pop_basic_guarantee_pct ?? d?.pop_basic_income_support_pct ?? 0),
+        support_youth_pct: Number(d?.pop_support_youth_pct ?? 0),
+        support_working_pct: Number(d?.pop_support_working_pct ?? 0),
+        support_senior_pct: Number(d?.pop_support_senior_pct ?? 0),
+        fertility_support_pct: Number(d?.pop_fertility_support_pct ?? 0),
+        retire_age: Number(d?.pop_retire_age ?? 65),
+        housing_relief_pct: Number(d?.pop_housing_relief_pct ?? 0),
+        unemployment_benefit_pct: Number(d?.pop_unemployment_benefit_pct ?? 0),
+        job_training_pct: Number(d?.pop_job_training_pct ?? 0),
+        education_support_pct: Number(d?.pop_education_support_pct ?? 0),
+        medical_support_pct: Number(d?.pop_medical_support_pct ?? 0),
+      };
+      const curMw = d?.min_wage != null && Number(d.min_wage) > 0 ? Number(d.min_wage) : null;
+      const labels = {
+        bracket_support_low_pct: "저소득 재분배",
+        bracket_support_mid_pct: "중산층 재분배",
+        bracket_support_high_pct: "고소득 재분배",
+        basic_guarantee_pct: "기초보장",
+        support_youth_pct: "청년 가산",
+        support_working_pct: "근로 가산",
+        support_senior_pct: "노인 가산",
+        fertility_support_pct: "출산지원",
+        retire_age: "정년",
+        housing_relief_pct: "주거 완화",
+        unemployment_benefit_pct: "실업수당",
+        job_training_pct: "직업훈련",
+        education_support_pct: "교육 보조",
+        medical_support_pct: "의료 보조",
+      };
+      const items = [];
+      let welfareChanged = false;
+      Object.keys(cur).forEach(key => {
+        if (Math.abs(Number(cur[key]) - Number(next[key])) < 0.51) return;
+        welfareChanged = true;
+        const unit = key === "retire_age" ? "세" : "%";
+        items.push({
+          icon: "sliders-horizontal",
+          text: `${labels[key] || key} ${Number(cur[key]).toFixed(0)}→${Number(next[key]).toFixed(0)}${unit}`,
+          tone: "",
+        });
+      });
+      const mwChanged = (curMw == null && next.min_wage != null)
+        || (curMw != null && next.min_wage == null)
+        || (curMw != null && next.min_wage != null && Math.abs(curMw - next.min_wage) > 1e-6);
+      if (mwChanged) {
+        const from = curMw == null ? "없음" : fmtMoney(curMw);
+        const to = next.min_wage == null ? "철회" : fmtMoney(next.min_wage);
+        items.push({ icon: "banknote", text: `최저임금 ${from}→${to}`, tone: "" });
+      }
+      let total = 0;
+      if (welfareChanged && popWelfareIntensityFromPayload(next) > 1e-9) {
+        total += policyActionCost("welfare", true);
+      }
+      if (mwChanged) {
+        total += policyActionCost("min_wage", true);
+      }
+      if (total > 0) {
+        items.unshift({
+          icon: "gavel",
+          text: `인구 정책 · ${fmtPolicyCostPts(total)}`,
+          tone: "cost",
+        });
+      }
+      const { min_wage, ...welfarePayload } = next;
+      return {
+        total,
+        items,
+        changed: welfareChanged || mwChanged,
+        welfareChanged,
+        mwChanged,
+        payload: welfarePayload,
+        min_wage,
+        clear_min_wage: mwChanged && min_wage == null && curMw != null,
+      };
+    }
+
+    function renderPopRedistribPane(d) {
+      const low = Number(d?.pop_bracket_support_low_pct ?? 0);
+      const mid = Number(d?.pop_bracket_support_mid_pct ?? 0);
+      const high = Number(d?.pop_bracket_support_high_pct ?? 0);
+      const br = d?.pop_income_bracket || {};
+      const shares = br.share_by_bracket || {};
+      const shareTxt = [
+        `저 ${(Number(shares.low || 0) * 100).toFixed(0)}%`,
+        `중 ${(Number(shares.mid || 0) * 100).toFixed(0)}%`,
+        `고 ${(Number(shares.high || 0) * 100).toFixed(0)}%`,
+      ].join(" · ");
+      const med = Number(br.median_income_pc || 0);
+      const medTxt = med > 0 ? `중위소득 ${fmtMoney(med)}/인` : "중위소득 —";
+      return `<div class="pi-co-card">
+        <div class="pi-co-card-title">소득분위 재분배</div>
+        <p class="pi-co-card-hint">복지 전용 분위(저&lt;0.8× · 중 · 고&gt;1.25×). ${esc(medTxt)} · 인구 ${esc(shareTxt)}</p>
+        ${piCoSliderRow({ id: "bracket_support_low_pct", label: "저소득", value: low, max: 200, guideKey: "bracket_low" })}
+        ${piCoSliderRow({ id: "bracket_support_mid_pct", label: "중산층", value: mid, max: 200, guideKey: "bracket_mid" })}
+        ${piCoSliderRow({ id: "bracket_support_high_pct", label: "고소득", value: high, max: 200, guideKey: "bracket_high" })}
+      </div>`;
+    }
+
+    function renderPopWelfarePane(d) {
+      const basic = Number(d?.pop_basic_guarantee_pct ?? d?.pop_basic_income_support_pct ?? 0);
+      const youth = Number(d?.pop_support_youth_pct ?? 0);
+      const working = Number(d?.pop_support_working_pct ?? 0);
+      const senior = Number(d?.pop_support_senior_pct ?? 0);
+      const fert = Number(d?.pop_fertility_support_pct ?? 0);
+      const retire = Number(d?.pop_retire_age ?? 65);
+      const housing = Number(d?.pop_housing_relief_pct ?? 0);
+      const cap = Number(d?.pop_welfare_cap ?? 0);
+      const est = Number(d?.pop_welfare_estimated_claim ?? 0);
+      const estCut = Number(d?.pop_welfare_estimated_cut_ratio ?? 1);
+      const capHint = cap > 0
+        ? `재정 상한 ${fmtMoney(cap)} · 예상 청구 ${fmtMoney(est)} · 예상 지급률 ${(estCut * 100).toFixed(0)}%`
+        : "재정 상한·청구액은 게임 진행 후 표시됩니다.";
+      return `<div class="pi-co-card">
+          <div class="pi-co-card-title pi-pol-guide" data-pol-key="basic_guarantee" data-pol-intensity="${basic}">기초보장</div>
+          <p class="pi-co-card-hint">저소득 부족분만. ${esc(capHint)}</p>
+          ${piCoSliderRow({ id: "basic_guarantee_pct", label: "부족분 커버율", value: basic, guideKey: "basic_guarantee" })}
+        </div>
+        <div class="pi-co-card">
+          <div class="pi-co-card-title">생애주기 가산</div>
+          <p class="pi-co-card-hint">필요액 대비 합산(소득배수 없음). 0~200%.</p>
+          ${piCoSliderRow({ id: "support_youth_pct", label: "청년", value: youth, max: 200, guideKey: "support_youth" })}
+          ${piCoSliderRow({ id: "support_working_pct", label: "근로", value: working, max: 200, guideKey: "support_working" })}
+          ${piCoSliderRow({ id: "support_senior_pct", label: "노인", value: senior, max: 200, guideKey: "support_senior" })}
+        </div>
+        <div class="pi-co-card">
+          <div class="pi-co-card-title">출산 · 정년 · 주거</div>
+          <p class="pi-co-card-hint">출산지원·정년·주거 충족도 보정.</p>
+          ${piCoSliderRow({ id: "fertility_support_pct", label: "출산지원", value: fert, guideKey: "fertility_support" })}
+          ${piCoSliderRow({ id: "retire_age", label: "정년", value: retire, min: 60, max: 70, fmt: "age", guideKey: "retire_age" })}
+          ${piCoSliderRow({ id: "housing_relief_pct", label: "주거부담 완화", value: housing, guideKey: "housing_relief" })}
+        </div>`;
+    }
+
+    function renderPopLaborPane(d) {
+      const unemp = Number(d?.pop_unemployment_benefit_pct ?? 0);
+      const train = Number(d?.pop_job_training_pct ?? 0);
+      const mw = d?.min_wage != null && Number(d.min_wage) > 0 ? Number(d.min_wage) : 0;
+      const mwShow = mw > 0 ? mw : 0;
+      return `<div class="pi-co-card">
+          <div class="pi-co-card-title">실업 · 훈련</div>
+          <p class="pi-co-card-hint">실업수당은 현금 지급, 직업훈련은 노동 효율 가산.</p>
+          ${piCoSliderRow({ id: "unemployment_benefit_pct", label: "실업수당", value: unemp, max: 200, guideKey: "unemployment_benefit" })}
+          ${piCoSliderRow({ id: "job_training_pct", label: "직업훈련", value: train, guideKey: "job_training" })}
+        </div>
+        <div class="pi-co-card">
+          <div class="pi-co-card-title pi-pol-guide" data-pol-key="min_wage" data-pol-intensity="${mw > 0 ? 100 : 0}">최저임금</div>
+          <p class="pi-co-card-hint">0이면 철회. 노동시장 정책과 동일합니다.</p>
+          <div class="pi-co-slider-row" data-slider-id="min_wage">
+            <div class="pi-co-slider-head">
+              <span class="lab pi-pol-guide" data-pol-key="min_wage">주당 최저임금</span>
+              <span class="val" data-val>${mw > 0 ? esc(fmtMoney(mw)) : "없음"}</span>
+            </div>
+            <input type="number" min="0" step="0.5" value="${mwShow}" data-key="min_wage" style="width:100%;padding:0.35rem 0.5rem;border-radius:6px;border:1px solid var(--border);background:var(--bg-elevated);color:inherit;">
+          </div>
+        </div>`;
+    }
+
+    function renderPopEduMedPane(d) {
+      const edu = Number(d?.pop_education_support_pct ?? 0);
+      const med = Number(d?.pop_medical_support_pct ?? 0);
+      return `<div class="pi-co-card">
+          <div class="pi-co-card-title">교육 · 의료 보조</div>
+          <p class="pi-co-card-hint">충족도 보너스 + 부족분 현금 보조(국고).</p>
+          ${piCoSliderRow({ id: "education_support_pct", label: "교육비 보조", value: edu, guideKey: "education_support" })}
+          ${piCoSliderRow({ id: "medical_support_pct", label: "의료비 보조", value: med, guideKey: "medical_support" })}
+        </div>`;
+    }
+
+    function renderPopulationPolicyIsland(d, opts) {
+      const el = document.getElementById("policy-island-body");
+      if (!el) return;
+      if (!(opts && opts.keepBaseline)) {
+        populationPolicyServerData = d || {};
+      }
+      const baseline = populationPolicyServerData || {};
+      // hidden fields so inactive tabs still submit current values
+      const hidden = (key, val) =>
+        `<input type="hidden" data-key="${esc(key)}" value="${Number(val) || 0}">`;
+      const allVals = {
+        bracket_support_low_pct: Number(d?.pop_bracket_support_low_pct ?? 0),
+        bracket_support_mid_pct: Number(d?.pop_bracket_support_mid_pct ?? 0),
+        bracket_support_high_pct: Number(d?.pop_bracket_support_high_pct ?? 0),
+        basic_guarantee_pct: Number(d?.pop_basic_guarantee_pct ?? d?.pop_basic_income_support_pct ?? 0),
+        support_youth_pct: Number(d?.pop_support_youth_pct ?? 0),
+        support_working_pct: Number(d?.pop_support_working_pct ?? 0),
+        support_senior_pct: Number(d?.pop_support_senior_pct ?? 0),
+        fertility_support_pct: Number(d?.pop_fertility_support_pct ?? 0),
+        retire_age: Number(d?.pop_retire_age ?? 65),
+        housing_relief_pct: Number(d?.pop_housing_relief_pct ?? 0),
+        unemployment_benefit_pct: Number(d?.pop_unemployment_benefit_pct ?? 0),
+        job_training_pct: Number(d?.pop_job_training_pct ?? 0),
+        education_support_pct: Number(d?.pop_education_support_pct ?? 0),
+        medical_support_pct: Number(d?.pop_medical_support_pct ?? 0),
+      };
+      const tabDefs = [
+        ["redistrib", "재분배"],
+        ["welfare", "복지"],
+        ["labor", "노동"],
+        ["edu_med", "교육·의료"],
       ];
-      const readPayload = () => {
-        const payload = {};
-        for (const s of specs) {
-          const el = document.getElementById(s.id);
-          if (!el) continue;
-          payload[s.key] = Math.max(0, Math.min(s.max, Number(el.value) || 0));
-        }
-        return payload;
+      const tabs = tabDefs.map(([id, lab]) =>
+        `<button type="button" class="pi-co-tab ${populationPolicyTab === id ? "on" : ""}" data-tab="${id}">${lab}</button>`
+      ).join("");
+      let pane = "";
+      if (populationPolicyTab === "redistrib") pane = renderPopRedistribPane(d);
+      else if (populationPolicyTab === "labor") pane = renderPopLaborPane(d);
+      else if (populationPolicyTab === "edu_med") pane = renderPopEduMedPane(d);
+      else pane = renderPopWelfarePane(d);
+
+      // Keep non-visible fields as hidden inputs so apply reads full state
+      const visibleKeys = new Set();
+      (pane.match(/data-key="([^"]+)"/g) || []).forEach(m => {
+        const k = m.slice(10, -1);
+        visibleKeys.add(k);
+      });
+      const hiddenHtml = Object.keys(allVals)
+        .filter(k => !visibleKeys.has(k))
+        .map(k => hidden(k, allVals[k]))
+        .join("");
+      // min_wage: only on labor tab; otherwise stash as hidden for change detection
+      let mwHidden = "";
+      if (populationPolicyTab !== "labor") {
+        const mw = d?.min_wage != null && Number(d.min_wage) > 0 ? Number(d.min_wage) : 0;
+        mwHidden = `<input type="hidden" data-key="min_wage" value="${mw}">`;
+      }
+
+      el.innerHTML = `<div class="pi-co-policy-stack">
+        <div class="pi-co-tabs">${tabs}</div>
+        ${pane}
+        ${hiddenHtml}${mwHidden}
+        <span class="pi-co-apply-host" id="pi-pop-apply-host"><button type="button" class="pi-co-apply" id="pi-pop-apply">인구 정책 적용</button></span>
+      </div>`;
+
+      bindPiCoSliders(el);
+      bindPolicyGuideTips(el);
+      hidePolicyGuideTip();
+
+      el.querySelectorAll(".pi-co-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          // stash current slider values into display state; keep server baseline
+          const snap = readPopWelfarePayload(el);
+          const merged = Object.assign({}, d, {
+            pop_bracket_support_low_pct: snap.bracket_support_low_pct,
+            pop_bracket_support_mid_pct: snap.bracket_support_mid_pct,
+            pop_bracket_support_high_pct: snap.bracket_support_high_pct,
+            pop_basic_guarantee_pct: snap.basic_guarantee_pct,
+            pop_support_youth_pct: snap.support_youth_pct,
+            pop_support_working_pct: snap.support_working_pct,
+            pop_support_senior_pct: snap.support_senior_pct,
+            pop_fertility_support_pct: snap.fertility_support_pct,
+            pop_retire_age: snap.retire_age,
+            pop_housing_relief_pct: snap.housing_relief_pct,
+            pop_unemployment_benefit_pct: snap.unemployment_benefit_pct,
+            pop_job_training_pct: snap.job_training_pct,
+            pop_education_support_pct: snap.education_support_pct,
+            pop_medical_support_pct: snap.medical_support_pct,
+            min_wage: snap.min_wage,
+          });
+          populationPolicyTab = btn.getAttribute("data-tab") || "redistrib";
+          renderPopulationPolicyIsland(merged, { keepBaseline: true });
+        });
+      });
+
+      const applyBtn = el.querySelector("#pi-pop-apply");
+      const applyHost = el.querySelector("#pi-pop-apply-host");
+      const refreshCost = () => {
+        syncPolicyApplyButton(applyBtn, calcPopWelfareApplyPlan(el, baseline), "인구 정책 적용");
       };
-      const syncLabels = () => {
-        for (const s of specs) {
-          const el = document.getElementById(s.id);
-          const valEl = document.getElementById(s.val);
-          if (el && valEl) valEl.textContent = `${Number(el.value || 0).toFixed(0)}%`;
-        }
-      };
-      let saveTimer = null;
-      const commit = async () => {
+      el.querySelectorAll('.pi-co-slider-row input[type="range"], .pi-co-slider-row input[type="number"]').forEach(inp => {
+        inp.addEventListener("input", () => {
+          if (inp.dataset.key === "basic_guarantee_pct") {
+            const title = el.querySelector('[data-pol-key="basic_guarantee"]');
+            if (title) title.dataset.polIntensity = String(inp.value);
+          }
+          if (inp.dataset.key === "min_wage") {
+            const valEl = inp.closest(".pi-co-slider-row")?.querySelector("[data-val]");
+            const v = Number(inp.value);
+            if (valEl) valEl.textContent = (Number.isFinite(v) && v > 0) ? fmtMoney(v) : "없음";
+            const title = el.querySelector('.pi-co-card-title[data-pol-key="min_wage"]');
+            if (title) title.dataset.polIntensity = (Number.isFinite(v) && v > 0) ? "100" : "0";
+          }
+          refreshCost();
+        });
+      });
+      refreshCost();
+      bindPolicyApplyCostTip(applyHost, () => calcPopWelfareApplyPlan(el, baseline), "인구 정책 적용", "인구");
+      if (applyBtn) applyBtn.addEventListener("click", async () => {
+        if (applyBtn.disabled) return;
         const cid = playerCountryId();
         if (!cid) return toast("플레이 국가가 없습니다.", true);
+        const plan = calcPopWelfareApplyPlan(el, baseline);
+        if (!plan.changed) return toast("변경된 설정이 없습니다.");
         try {
-          const res = await api("/api/policy/pop-welfare", {
-            method: "POST",
-            body: JSON.stringify({ country_id: cid, ...readPayload() }),
-          });
-          const basic = Number(res.pop_basic_income_support_pct ?? 0);
-          const low = Number(res.pop_universal_support_low_pct ?? 0);
-          const mid = Number(res.pop_universal_support_mid_pct ?? 0);
-          const high = Number(res.pop_universal_support_high_pct ?? 0);
-          const map = {
-            "pi-pop-basic-slider": basic,
-            "pi-pop-uni-low-slider": low,
-            "pi-pop-uni-mid-slider": mid,
-            "pi-pop-uni-high-slider": high,
-          };
-          for (const [id, v] of Object.entries(map)) {
-            const el = document.getElementById(id);
-            if (el && document.activeElement !== el) el.value = String(v);
+          let res = baseline;
+          if (plan.welfareChanged) {
+            res = await api("/api/policy/pop-welfare", {
+              method: "POST",
+              body: JSON.stringify({ country_id: cid, ...plan.payload }),
+            });
           }
-          syncLabels();
-          toast("인구 복지 정책을 반영했습니다.");
-          refreshPolicyPoints();
+          if (plan.mwChanged) {
+            const mwBody = plan.clear_min_wage
+              ? { country_id: cid, clear: true }
+              : { country_id: cid, min_wage: plan.min_wage };
+            const mwRes = await api("/api/policy/min-wage", {
+              method: "POST",
+              body: JSON.stringify(mwBody),
+            });
+            if (!plan.welfareChanged) {
+              res = await api("/api/policy/pop-welfare?country_id=" + encodeURIComponent(cid));
+            } else if (res && typeof res === "object") {
+              res.min_wage = mwRes.min_wage;
+            }
+          }
+          toast("인구 정책을 반영했습니다.");
+          await refreshPolicyPoints();
+          renderPopulationPolicyIsland(res);
         } catch (err) {
-          toast(err.message || "인구 복지 정책 저장 실패", true);
-          syncPolicyIslandContent();
+          toast(err.message || "인구 정책 저장 실패", true);
+          refreshCost();
         }
-      };
-      const scheduleCommit = () => {
-        if (saveTimer) clearTimeout(saveTimer);
-        saveTimer = setTimeout(() => {
-          saveTimer = null;
-          commit();
-        }, 280);
-      };
-      for (const s of specs) {
-        const el = document.getElementById(s.id);
-        if (!el) continue;
-        el.oninput = () => {
-          syncLabels();
-          scheduleCommit();
-        };
-        el.onchange = () => {
-          if (saveTimer) clearTimeout(saveTimer);
-          saveTimer = null;
-          commit();
-        };
-      }
+      });
     }
 
     function syncPolicyIslandContent() {
@@ -24511,7 +24909,7 @@
         if (landPanel) landPanel.hidden = true;
         if (govPanel) govPanel.hidden = true;
       } else if (isPopulation) {
-        if (titleEl) titleEl.textContent = "인구 복지 정책";
+        if (titleEl) titleEl.textContent = "인구 정책";
         if (ratePanel) ratePanel.hidden = true;
         if (equityPanel) equityPanel.hidden = true;
         if (bankPanel) bankPanel.hidden = true;

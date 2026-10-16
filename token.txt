@@ -1,9 +1,11 @@
 source pypy-env/bin/activate
 
+source .venv/bin/activate
+
 sudo kill -9 $(lsof -t -i:8080)
 
 git add .
-git commit -m "v5.0"
+git commit -m "v6.0"
 git push
 
 curl https://cursor.com/install -fsS | bash

@@ -226,6 +226,12 @@ from main import (
     apply_financial_shock_policy_event,
     financial_shock_rate_preview,
     country_financial_shock_payload,
+    migrate_pop_welfare_policy_fields,
+    country_pop_welfare_cap,
+    country_pop_welfare_policy_intensity,
+    country_pop_retire_age,
+    pop_welfare_build_planned_payments,
+    pop_welfare_bracket_summary,
     world_calendar_date,
     country_gov_bond_issue_amount,
     country_schedule_gov_bond_issue,
@@ -1541,14 +1547,47 @@ class LocalFacilityBody(BaseModel):
 
 class PopWelfarePolicyBody(BaseModel):
     country_id: str
+    # 재분배
+    bracket_support_low_pct: Optional[float] = Field(
+        None, description="저소득 재분배: 필요소비 대비 0~200%")
+    bracket_support_mid_pct: Optional[float] = Field(
+        None, description="중산층 재분배: 필요소비 대비 0~200%")
+    bracket_support_high_pct: Optional[float] = Field(
+        None, description="고소득 재분배: 필요소비 대비 0~200%")
+    # 복지
+    basic_guarantee_pct: Optional[float] = Field(
+        None, description="기초보장: 저소득 부족분 커버율 0~100%")
     basic_income_support_pct: Optional[float] = Field(
-        None, description="기초 수급 지원금: 미충족 수요 부족분 커버율 0~100%")
+        None, description="(alias) 기초보장 → basic_guarantee_pct")
+    support_youth_pct: Optional[float] = Field(
+        None, description="청년(+초기 근로) 가산: 수요 필요액 대비 0~200%")
+    support_working_pct: Optional[float] = Field(
+        None, description="근로 가산: 수요 필요액 대비 0~200%")
+    support_senior_pct: Optional[float] = Field(
+        None, description="노인 가산: 수요 필요액 대비 0~200%")
+    fertility_support_pct: Optional[float] = Field(
+        None, description="출산지원 강도 0~100%")
+    retire_age: Optional[float] = Field(
+        None, description="정년 60~70세")
+    housing_relief_pct: Optional[float] = Field(
+        None, description="주거부담 완화 0~100%")
+    # 노동
+    unemployment_benefit_pct: Optional[float] = Field(
+        None, description="실업수당: 기준소비×실업인구 대비 0~200%")
+    job_training_pct: Optional[float] = Field(
+        None, description="직업훈련 강도 0~100%")
+    # 교육·의료
+    education_support_pct: Optional[float] = Field(
+        None, description="교육비 보조 0~100%")
+    medical_support_pct: Optional[float] = Field(
+        None, description="의료비 보조 0~100%")
+    # deprecated aliases
     universal_support_low_pct: Optional[float] = Field(
-        None, description="저소득 보편 지원금: 수요 필요액 대비 0~200%")
+        None, description="(deprecated) → bracket_support_low_pct")
     universal_support_mid_pct: Optional[float] = Field(
-        None, description="중산층 보편 지원금: 수요 필요액 대비 0~200%")
+        None, description="(deprecated) → bracket_support_mid_pct")
     universal_support_high_pct: Optional[float] = Field(
-        None, description="고소득 보편 지원금: 수요 필요액 대비 0~200%")
+        None, description="(deprecated) → bracket_support_high_pct")
 
 
 class TradeTariffBody(BaseModel):
@@ -3845,22 +3884,70 @@ async def api_local_facilities_options():
     }
 
 
-@app.get("/api/policy/pop-welfare")
-async def api_policy_pop_welfare_get(country_id: str):
-    session = get_active_session()
-    country = _country_or_404(session, country_id)
+def _pop_welfare_policy_api_payload(session, country_id: str) -> Dict[str, Any]:
+    country = session.world.countries[country_id]
+    migrate_pop_welfare_policy_fields(country)
+    cap = country_pop_welfare_cap(session.world, country)
+    planned = pop_welfare_build_planned_payments(session.world, country)
+    est_claimed = sum(amt for _, amt, _ in planned)
+    cut_preview = 1.0
+    if est_claimed > 1e-9 and cap > 1e-9:
+        cut_preview = min(1.0, cap / est_claimed)
+    elif est_claimed > 1e-9 and cap <= 1e-9:
+        cut_preview = 0.0
+    bracket = pop_welfare_bracket_summary(session.world, country)
+    mw = getattr(country, "min_wage", None)
+    basic_g = float(getattr(country, "pop_basic_guarantee_pct", 0.0) or 0.0)
     return {
         "ok": True,
         "country_id": country_id,
-        "pop_basic_income_support_pct": round(
-            float(getattr(country, "pop_basic_income_support_pct", 0.0) or 0.0), 1),
-        "pop_universal_support_low_pct": round(
-            float(getattr(country, "pop_universal_support_low_pct", 0.0) or 0.0), 1),
-        "pop_universal_support_mid_pct": round(
-            float(getattr(country, "pop_universal_support_mid_pct", 0.0) or 0.0), 1),
-        "pop_universal_support_high_pct": round(
-            float(getattr(country, "pop_universal_support_high_pct", 0.0) or 0.0), 1),
+        "pop_bracket_support_low_pct": round(
+            float(getattr(country, "pop_bracket_support_low_pct", 0.0) or 0.0), 1),
+        "pop_bracket_support_mid_pct": round(
+            float(getattr(country, "pop_bracket_support_mid_pct", 0.0) or 0.0), 1),
+        "pop_bracket_support_high_pct": round(
+            float(getattr(country, "pop_bracket_support_high_pct", 0.0) or 0.0), 1),
+        "pop_basic_guarantee_pct": round(basic_g, 1),
+        "pop_basic_income_support_pct": round(basic_g, 1),  # alias
+        "pop_support_youth_pct": round(
+            float(getattr(country, "pop_support_youth_pct", 0.0) or 0.0), 1),
+        "pop_support_working_pct": round(
+            float(getattr(country, "pop_support_working_pct", 0.0) or 0.0), 1),
+        "pop_support_senior_pct": round(
+            float(getattr(country, "pop_support_senior_pct", 0.0) or 0.0), 1),
+        "pop_fertility_support_pct": round(
+            float(getattr(country, "pop_fertility_support_pct", 0.0) or 0.0), 1),
+        "pop_housing_relief_pct": round(
+            float(getattr(country, "pop_housing_relief_pct", 0.0) or 0.0), 1),
+        "pop_retire_age": round(country_pop_retire_age(country), 1),
+        "pop_unemployment_benefit_pct": round(
+            float(getattr(country, "pop_unemployment_benefit_pct", 0.0) or 0.0), 1),
+        "pop_job_training_pct": round(
+            float(getattr(country, "pop_job_training_pct", 0.0) or 0.0), 1),
+        "pop_education_support_pct": round(
+            float(getattr(country, "pop_education_support_pct", 0.0) or 0.0), 1),
+        "pop_medical_support_pct": round(
+            float(getattr(country, "pop_medical_support_pct", 0.0) or 0.0), 1),
+        "min_wage": (
+            round(float(mw), 4) if mw is not None and float(mw) > 0 else None),
+        "pop_welfare_cap": round(cap, 2),
+        "pop_welfare_estimated_claim": round(est_claimed, 2),
+        "pop_welfare_estimated_cut_ratio": round(cut_preview, 4),
+        "pop_welfare_last_claimed_total": round(
+            float(getattr(country, "last_pop_welfare_claimed_total", 0.0) or 0.0), 2),
+        "pop_welfare_last_paid_total": round(
+            float(getattr(country, "last_pop_welfare_paid_total", 0.0) or 0.0), 2),
+        "pop_welfare_last_cut_ratio": round(
+            float(getattr(country, "last_pop_welfare_cut_ratio", 1.0) or 1.0), 4),
+        "pop_income_bracket": bracket,
     }
+
+
+@app.get("/api/policy/pop-welfare")
+async def api_policy_pop_welfare_get(country_id: str):
+    session = get_active_session()
+    _country_or_404(session, country_id)
+    return _pop_welfare_policy_api_payload(session, country_id)
 
 
 @app.post("/api/policy/pop-welfare")
@@ -3868,57 +3955,108 @@ async def api_policy_pop_welfare_set(body: PopWelfarePolicyBody):
     session = get_active_session()
     _require_started(session)
     country = _country_or_404(session, body.country_id)
-    basic = float(getattr(country, "pop_basic_income_support_pct", 0.0) or 0.0)
-    low = float(getattr(country, "pop_universal_support_low_pct", 0.0) or 0.0)
-    mid = float(getattr(country, "pop_universal_support_mid_pct", 0.0) or 0.0)
-    high = float(getattr(country, "pop_universal_support_high_pct", 0.0) or 0.0)
-    if body.basic_income_support_pct is not None:
-        basic = clamp(float(body.basic_income_support_pct), 0.0, 100.0)
-    if body.universal_support_low_pct is not None:
-        low = clamp(float(body.universal_support_low_pct), 0.0, 200.0)
-    if body.universal_support_mid_pct is not None:
-        mid = clamp(float(body.universal_support_mid_pct), 0.0, 200.0)
-    if body.universal_support_high_pct is not None:
-        high = clamp(float(body.universal_support_high_pct), 0.0, 200.0)
-    changed = (
-        (body.basic_income_support_pct is not None
-         and abs(basic - float(getattr(country, "pop_basic_income_support_pct", 0.0) or 0.0)) > 1e-9)
-        or (body.universal_support_low_pct is not None
-            and abs(low - float(getattr(country, "pop_universal_support_low_pct", 0.0) or 0.0)) > 1e-9)
-        or (body.universal_support_mid_pct is not None
-            and abs(mid - float(getattr(country, "pop_universal_support_mid_pct", 0.0) or 0.0)) > 1e-9)
-        or (body.universal_support_high_pct is not None
-            and abs(high - float(getattr(country, "pop_universal_support_high_pct", 0.0) or 0.0)) > 1e-9)
-    )
+    migrate_pop_welfare_policy_fields(country)
+
+    def _f(attr: str) -> float:
+        return float(getattr(country, attr, 0.0) or 0.0)
+
+    before = {
+        "pop_bracket_support_low_pct": _f("pop_bracket_support_low_pct"),
+        "pop_bracket_support_mid_pct": _f("pop_bracket_support_mid_pct"),
+        "pop_bracket_support_high_pct": _f("pop_bracket_support_high_pct"),
+        "pop_basic_guarantee_pct": _f("pop_basic_guarantee_pct"),
+        "pop_support_youth_pct": _f("pop_support_youth_pct"),
+        "pop_support_working_pct": _f("pop_support_working_pct"),
+        "pop_support_senior_pct": _f("pop_support_senior_pct"),
+        "pop_fertility_support_pct": _f("pop_fertility_support_pct"),
+        "pop_housing_relief_pct": _f("pop_housing_relief_pct"),
+        "pop_retire_age": country_pop_retire_age(country),
+        "pop_unemployment_benefit_pct": _f("pop_unemployment_benefit_pct"),
+        "pop_job_training_pct": _f("pop_job_training_pct"),
+        "pop_education_support_pct": _f("pop_education_support_pct"),
+        "pop_medical_support_pct": _f("pop_medical_support_pct"),
+    }
+
+    # deprecated universal → bracket (승격, wipe 금지)
+    br_low = body.bracket_support_low_pct
+    br_mid = body.bracket_support_mid_pct
+    br_high = body.bracket_support_high_pct
+    if br_low is None and body.universal_support_low_pct is not None:
+        br_low = body.universal_support_low_pct
+    if br_mid is None and body.universal_support_mid_pct is not None:
+        br_mid = body.universal_support_mid_pct
+    if br_high is None and body.universal_support_high_pct is not None:
+        br_high = body.universal_support_high_pct
+
+    # alias: basic_income → basic_guarantee
+    guarantee_in = body.basic_guarantee_pct
+    if guarantee_in is None and body.basic_income_support_pct is not None:
+        guarantee_in = body.basic_income_support_pct
+
+    if br_low is not None:
+        country.pop_bracket_support_low_pct = clamp(float(br_low), 0.0, 200.0)
+    if br_mid is not None:
+        country.pop_bracket_support_mid_pct = clamp(float(br_mid), 0.0, 200.0)
+    if br_high is not None:
+        country.pop_bracket_support_high_pct = clamp(float(br_high), 0.0, 200.0)
+    if guarantee_in is not None:
+        country.pop_basic_guarantee_pct = clamp(float(guarantee_in), 0.0, 100.0)
+    if body.support_youth_pct is not None:
+        country.pop_support_youth_pct = clamp(float(body.support_youth_pct), 0.0, 200.0)
+    if body.support_working_pct is not None:
+        country.pop_support_working_pct = clamp(
+            float(body.support_working_pct), 0.0, 200.0)
+    if body.support_senior_pct is not None:
+        country.pop_support_senior_pct = clamp(float(body.support_senior_pct), 0.0, 200.0)
+    if body.fertility_support_pct is not None:
+        country.pop_fertility_support_pct = clamp(
+            float(body.fertility_support_pct), 0.0, 100.0)
+    if body.housing_relief_pct is not None:
+        country.pop_housing_relief_pct = clamp(float(body.housing_relief_pct), 0.0, 100.0)
+    if body.retire_age is not None:
+        country.pop_retire_age = clamp(float(body.retire_age), 60.0, 70.0)
+    if body.unemployment_benefit_pct is not None:
+        country.pop_unemployment_benefit_pct = clamp(
+            float(body.unemployment_benefit_pct), 0.0, 200.0)
+    if body.job_training_pct is not None:
+        country.pop_job_training_pct = clamp(float(body.job_training_pct), 0.0, 100.0)
+    if body.education_support_pct is not None:
+        country.pop_education_support_pct = clamp(
+            float(body.education_support_pct), 0.0, 100.0)
+    if body.medical_support_pct is not None:
+        country.pop_medical_support_pct = clamp(
+            float(body.medical_support_pct), 0.0, 100.0)
+
+    migrate_pop_welfare_policy_fields(country)  # alias sync
+
+    after = {
+        "pop_bracket_support_low_pct": _f("pop_bracket_support_low_pct"),
+        "pop_bracket_support_mid_pct": _f("pop_bracket_support_mid_pct"),
+        "pop_bracket_support_high_pct": _f("pop_bracket_support_high_pct"),
+        "pop_basic_guarantee_pct": _f("pop_basic_guarantee_pct"),
+        "pop_support_youth_pct": _f("pop_support_youth_pct"),
+        "pop_support_working_pct": _f("pop_support_working_pct"),
+        "pop_support_senior_pct": _f("pop_support_senior_pct"),
+        "pop_fertility_support_pct": _f("pop_fertility_support_pct"),
+        "pop_housing_relief_pct": _f("pop_housing_relief_pct"),
+        "pop_retire_age": country_pop_retire_age(country),
+        "pop_unemployment_benefit_pct": _f("pop_unemployment_benefit_pct"),
+        "pop_job_training_pct": _f("pop_job_training_pct"),
+        "pop_education_support_pct": _f("pop_education_support_pct"),
+        "pop_medical_support_pct": _f("pop_medical_support_pct"),
+    }
+    changed = any(abs(after[k] - before[k]) > 1e-9 for k in before)
+
     if changed:
         _spend_policy_or_400(
-            session, country, "welfare", enabling=(basic + low + mid + high) > 1e-9)
-    if body.basic_income_support_pct is not None:
-        country.pop_basic_income_support_pct = clamp(
-            float(body.basic_income_support_pct), 0.0, 100.0)
-    if body.universal_support_low_pct is not None:
-        country.pop_universal_support_low_pct = clamp(
-            float(body.universal_support_low_pct), 0.0, 200.0)
-    if body.universal_support_mid_pct is not None:
-        country.pop_universal_support_mid_pct = clamp(
-            float(body.universal_support_mid_pct), 0.0, 200.0)
-    if body.universal_support_high_pct is not None:
-        country.pop_universal_support_high_pct = clamp(
-            float(body.universal_support_high_pct), 0.0, 200.0)
-    shock = _note_fin_shock(session, country) if changed else country_financial_shock_payload(country)
-    return {
-        "ok": True,
-        "country_id": body.country_id,
-        "pop_basic_income_support_pct": round(
-            float(getattr(country, "pop_basic_income_support_pct", 0.0) or 0.0), 1),
-        "pop_universal_support_low_pct": round(
-            float(getattr(country, "pop_universal_support_low_pct", 0.0) or 0.0), 1),
-        "pop_universal_support_mid_pct": round(
-            float(getattr(country, "pop_universal_support_mid_pct", 0.0) or 0.0), 1),
-        "pop_universal_support_high_pct": round(
-            float(getattr(country, "pop_universal_support_high_pct", 0.0) or 0.0), 1),
-        **shock,
-    }
+            session, country, "welfare",
+            enabling=country_pop_welfare_policy_intensity(country) > 1e-9,
+        )
+    shock = (
+        _note_fin_shock(session, country) if changed
+        else country_financial_shock_payload(country)
+    )
+    return {**_pop_welfare_policy_api_payload(session, body.country_id), **shock}
 
 
 @app.post("/api/policy/trade")

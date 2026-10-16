@@ -11957,19 +11957,15 @@
       {
         "brand": "GE",
         "strategy": "conglomerate",
-        "root": "GE일렉트릭",
+        "root": "GE 일렉트릭",
         "root_type": "전자 기업",
         "members": [
           {
-            "name": "GE컴퓨터",
-            "type": "컴퓨터 기업"
-          },
-          {
-            "name": "GE인더스트리",
+            "name": "GE 인더스트리",
             "type": "산업 설비 기업"
           },
           {
-            "name": "GE어플라이언스",
+            "name": "GE 어플라이언스",
             "type": "가전 기업"
           }
         ]
@@ -12007,7 +12003,7 @@
         "root_type": "차량 기업",
         "members": [
           {
-            "name": "도요타 부품",
+            "name": "덴소",
             "type": "기계 부품 기업"
           }
         ]
@@ -12019,11 +12015,11 @@
         "root_type": "전자 기업",
         "members": [
           {
-            "name": "히타치 컴퓨터",
+            "name": "히타치 디지털 서비스",
             "type": "컴퓨터 기업"
           },
           {
-            "name": "히타치 반도체",
+            "name": "르네사스 일렉트로닉스",
             "type": "반도체 기업"
           }
         ]
@@ -12035,7 +12031,7 @@
         "root_type": "화학 기업",
         "members": [
           {
-            "name": "스미토모 금속",
+            "name": "스미토모 금속광산",
             "type": "철강 기업"
           },
           {
@@ -12053,19 +12049,19 @@
         "root_type": "산업 설비 기업",
         "members": [
           {
-            "name": "지멘스 전자",
+            "name": "지멘스 디지털 인더스트리",
             "type": "전자 기업"
           },
           {
-            "name": "지멘스 철도",
+            "name": "지멘스 모빌리티",
             "type": "철도 기업"
           },
           {
-            "name": "지멘스 가전",
+            "name": "보쉬-지멘스 가전",
             "type": "가전 기업"
           },
           {
-            "name": "지멘스 반도체",
+            "name": "인피니언 테크놀로지스",
             "type": "반도체 기업"
           }
         ]
@@ -12073,11 +12069,11 @@
       {
         "brand": "보쉬",
         "strategy": "conglomerate",
-        "root": "보쉬",
+        "root": "로버트 보쉬",
         "root_type": "산업 설비 기업",
         "members": [
           {
-            "name": "보쉬 가전",
+            "name": "BSH 가전",
             "type": "가전 기업"
           }
         ]
@@ -12087,11 +12083,11 @@
       {
         "brand": "GEC",
         "strategy": "conglomerate",
-        "root": "GEC인더스트리",
+        "root": "GEC 인더스트리",
         "root_type": "산업 설비 기업",
         "members": [
           {
-            "name": "GEC일렉트릭",
+            "name": "GEC 일렉트릭",
             "type": "전자 기업"
           }
         ]
@@ -12101,11 +12097,11 @@
       {
         "brand": "토탈",
         "strategy": "vertical",
-        "root": "토탈",
+        "root": "토탈에너지스",
         "root_type": "화학 기업",
         "members": [
           {
-            "name": "토탈 원유",
+            "name": "토탈에너지스 업스트림",
             "type": "원유 기업"
           }
         ]
@@ -12115,7 +12111,7 @@
       {
         "brand": "중국석유",
         "strategy": "vertical",
-        "root": "중국석유",
+        "root": "중국석유천연가스",
         "root_type": "원유 기업",
         "members": [
           {
@@ -12131,11 +12127,11 @@
         "root_type": "컴퓨터 기업",
         "members": [
           {
-            "name": "레노버전자",
+            "name": "모토로라 모빌리티",
             "type": "전자 기업"
           },
           {
-            "name": "레노버반도체",
+            "name": "레노버 인프라스트럭처 솔루션즈",
             "type": "반도체 기업"
           }
         ]
@@ -12163,15 +12159,15 @@
       {
         "brand": "타타",
         "strategy": "conglomerate",
-        "root": "타타 제철",
+        "root": "타타 스틸",
         "root_type": "철강 기업",
         "members": [
           {
-            "name": "타타 케미컬",
+            "name": "타타 케미컬스",
             "type": "화학 기업"
           },
           {
-            "name": "타타 자동차",
+            "name": "타타 모터스",
             "type": "차량 기업"
           }
         ]

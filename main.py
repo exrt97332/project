@@ -11837,6 +11837,17 @@ POP_FERTILE_AGE_MIN = 30.0
 POP_FERTILE_AGE_MAX = 40.0
 POP_YOUTH_AGE_MAX = 20.0
 POP_RETIRE_AGE = 65.0
+POP_YOUTH_SUPPORT_AGE_MAX = 24.0
+# 복지 전용 소득분위 (세금 구간과 분리). 중위소득 대비 배수.
+POP_WELFARE_BRACKET_LOW_MAX = 0.80
+POP_WELFARE_BRACKET_HIGH_MIN = 1.25
+POP_WELFARE_CAP_TAX_ALPHA = 0.35
+POP_WELFARE_CAP_GDP_BETA = 0.008
+POP_FERTILITY_SUPPORT_BIRTH_K = 0.015
+POP_HOUSING_RELIEF_FILL_K = 0.45
+POP_EDU_RELIEF_FILL_K = 0.40
+POP_MED_RELIEF_FILL_K = 0.40
+POP_JOB_TRAINING_LABOR_BONUS = 0.06  # intensity 1.0 → +6%p labor fill
 POP_PARENT_SUPPORT_RATE = 0.85
 # 자녀지원 상한: 부모 본인 소비(이상적)의 이 배수까지만 (비슷하거나 약간 초과)
 POP_PARENT_SUPPORT_TO_OWN_CONS = 1.10
@@ -12626,12 +12637,32 @@ IB_REGIME_STYLE_PRIOR: Dict[str, Dict[str, float]] = {
     "balanced_value": {"momentum": 0.0, "fundamental": 0.40, "macro": 0.0},
     "bond_heavy": {"momentum": -0.40, "fundamental": 0.0, "macro": 0.50},
 }
-# 채권 FRN: 쿠폰 = 기준금리 + 시장스프레드. 수급은 스프레드를 bp(%p)로 가산.
-BOND_SPREAD_FLOW_SCALE = 0.35          # (sell/buy − 1) → %p
-BOND_SPREAD_WEEKLY_MOVE_CAP = 0.15     # 주간 ±15bp
-BOND_SPREAD_MEAN_REVERT = 0.10         # 공정스프레드 평균회귀
-BOND_SPREAD_TREND_PREV = 0.30          # 전주 스프레드 변동 관성
-BOND_SPREAD_BIAS_SCALE = 0.05          # invest_bias → %p
+# 채권 FRN: 쿠폰 = 기준금리 + 시장스프레드. 주식과 동형 — 레짐·노이즈·소화주.
+# 구 (sell/buy−1)*0.35 + 전주 관성 0.30 은 주간 ±캡에 매달린 직선 차트를 만들었다.
+BOND_SPREAD_FLOW_SCALE = 0.12          # tanh 불균형 × 이 값 → %p
+BOND_SPREAD_WEEKLY_MOVE_CAP = 0.22     # 주간 ±22bp (노이즈·점프 여유)
+BOND_SPREAD_MEAN_REVERT = 0.08         # 공정스프레드 평균회귀
+BOND_SPREAD_TREND_PREV = 0.18          # 레거시; 실제 혼합은 financial_regime_signed_change
+BOND_SPREAD_BIAS_SCALE = 0.05          # 레거시 invest_bias 가산(신규 경로는 regime bias)
+BOND_IMBALANCE_TANH_GAIN = 1.4
+BOND_SPREAD_RANGE_EPS = 0.015          # %p — 이하면 횡보 취급
+BOND_SPREAD_NOISE_BASE = 0.035         # 미시노이즈 기본 σ (%p)
+BOND_SPREAD_NOISE_FLOOR = 0.015
+BOND_SPREAD_NOISE_MAX = 0.090
+BOND_VOL_EMA_LAMBDA = 0.28
+BOND_SPREAD_JUMP_PROB = 0.08
+BOND_SPREAD_JUMP_SCALE = 2.5
+BOND_DIGEST_WEEK_PROB = 0.28
+BOND_DIGEST_WEEK_SCALE = 0.12
+BOND_DIGEST_STREAK_BONUS = 0.08
+BOND_DIGEST_STREAK_PROB_CAP = 0.62
+BOND_FLOW_AMP_JITTER = 0.55
+BOND_STREAK_DAMP_START = 2
+BOND_STREAK_DAMP_PER = 0.22
+BOND_STREAK_DAMP_FLOOR = 0.22
+BOND_MARKET_FACTOR_BASE = 0.020        # 국가 공유 금리충격 (%p)
+BOND_MARKET_FACTOR_BETA = 0.70
+BOND_MARKET_FACTOR_JUMP_PROB = 0.08
 # 미소화 신규 발행(is_treasury_issue)도 수급 압력에 일부 반영 (2차매도=1.0)
 BOND_TREASURY_SUPPLY_FLOW_WEIGHT = 0.40
 # 신규 발행 소화: 극단 정크만 제외 (신용·13주 ECL)
@@ -12664,12 +12695,23 @@ def stock_damped_price_ratio(raw_ratio: float) -> float:
 
 
 def bond_flow_spread_delta(raw_ratio: float) -> float:
-    """매도/매수 절대 비율 → 스프레드 변동(%p). 매도>매수 → 스프레드↑."""
+    """레거시: 매도/매수 절대 비율 → 스프레드 변동(%p). 신규는 bond_imbalance_spread_delta."""
     return (float(raw_ratio) - 1.0) * BOND_SPREAD_FLOW_SCALE
 
 
+def bond_imbalance_spread_delta(sell_vol: float, buy_vol: float) -> float:
+    """tanh로 완화한 (매도−매수)/합 × 스케일 → 스프레드 %p. 매도>매수 → 상승."""
+    total = float(sell_vol) + float(buy_vol)
+    if total <= 1e-12:
+        return 0.0
+    raw_imb = (float(sell_vol) - float(buy_vol)) / total
+    gain = max(1e-9, float(BOND_IMBALANCE_TANH_GAIN))
+    imb = math.tanh(gain * raw_imb) / math.tanh(gain)
+    return imb * float(BOND_SPREAD_FLOW_SCALE)
+
+
 def bond_damped_rate_ratio(raw_ratio: float) -> float:
-    """레거시 호환. 신규 코드는 bond_flow_spread_delta(%p)를 쓴다."""
+    """레거시 호환. 신규 코드는 bond_imbalance_spread_delta(%p)를 쓴다."""
     return 1.0 + bond_flow_spread_delta(raw_ratio)
 
 
@@ -14205,13 +14247,161 @@ def bond_market_current_spread(
         return clamp(last - base, BOND_SPREAD_FLOOR, BOND_SPREAD_CEIL)
 
 
+def bond_recent_move_streak(market: Optional["BondMarketState"]) -> Tuple[int, float]:
+    """직전 연속 동방향 스프레드 변동 주수와 부호(+1/-1/0)."""
+    if market is None:
+        return 0, 0.0
+    hist = list(getattr(market, "rate_change_history", None) or [])
+    if not hist:
+        rates = [
+            float(r) for r in (getattr(market, "weekly_rate_history", None) or [])
+            if float(r) > 1e-12
+        ]
+        hist = [rates[i] - rates[i - 1] for i in range(1, len(rates))]
+    if not hist:
+        return 0, 0.0
+    last = float(hist[-1])
+    if abs(last) <= 1e-8:
+        return 0, 0.0
+    sign = 1.0 if last > 0.0 else -1.0
+    streak = 1
+    for chg in reversed(hist[:-1]):
+        c = float(chg)
+        if c * sign > 1e-8:
+            streak += 1
+        else:
+            break
+    return streak, sign
+
+
+def bond_streak_flow_damp(market: Optional["BondMarketState"], flow: float) -> float:
+    """연속 동방향 금리 충격이 쌓이면 같은 방향 수급 충격을 줄인다."""
+    f = float(flow or 0.0)
+    if abs(f) <= 1e-15:
+        return 0.0
+    streak, sign = bond_recent_move_streak(market)
+    if streak < BOND_STREAK_DAMP_START or f * sign <= 0.0:
+        return f
+    extra = max(0, streak - BOND_STREAK_DAMP_START + 1)
+    mult = max(
+        BOND_STREAK_DAMP_FLOOR,
+        1.0 - BOND_STREAK_DAMP_PER * float(extra),
+    )
+    return f * mult
+
+
+def bond_update_realized_vol(market: "BondMarketState") -> float:
+    """최근 스프레드 등락 기반 실현변동성 EMA. 미시노이즈 스케일."""
+    hist = list(getattr(market, "rate_change_history", None) or [])[-8:]
+    if len(hist) >= 2:
+        recent = math.sqrt(sum(float(c) * float(c) for c in hist) / float(len(hist)))
+    elif hist:
+        recent = abs(float(hist[-1]))
+    else:
+        recent = float(BOND_SPREAD_NOISE_BASE)
+    prev = float(getattr(market, "realized_vol_ema", 0.0) or 0.0)
+    if prev <= 1e-15:
+        prev = float(BOND_SPREAD_NOISE_BASE)
+    lam = clamp(float(BOND_VOL_EMA_LAMBDA), 0.05, 0.80)
+    blended = (1.0 - lam) * prev + lam * max(recent, BOND_SPREAD_NOISE_FLOOR * 0.5)
+    vol = clamp(
+        0.55 * float(BOND_SPREAD_NOISE_BASE) + 0.45 * blended,
+        float(BOND_SPREAD_NOISE_FLOOR),
+        float(BOND_SPREAD_NOISE_MAX),
+    )
+    market.realized_vol_ema = vol
+    return vol
+
+
+def bond_microstructure_noise(
+    market: "BondMarketState",
+    *,
+    apply_noise: bool,
+) -> float:
+    """발행체 고유 미시노이즈 — 변동성 클러스터링 + 희귀 점프 (%p)."""
+    if not apply_noise:
+        return 0.0
+    vol = bond_update_realized_vol(market)
+    noise = _stock_laplace_noise(vol)
+    if random.random() < float(BOND_SPREAD_JUMP_PROB):
+        noise += random.gauss(0.0, vol * float(BOND_SPREAD_JUMP_SCALE))
+    return clamp(
+        noise,
+        -float(BOND_SPREAD_WEEKLY_MOVE_CAP),
+        float(BOND_SPREAD_WEEKLY_MOVE_CAP),
+    )
+
+
+def bond_draw_country_market_factor(
+    world: Optional["World"],
+    country_id: str,
+) -> float:
+    """국가·주 단위 공유 금리충격. Laplace + 약한 신용 편향."""
+    if world is None:
+        shock = _stock_laplace_noise(float(BOND_MARKET_FACTOR_BASE))
+        if random.random() < float(BOND_MARKET_FACTOR_JUMP_PROB):
+            shock += random.gauss(0.0, float(BOND_MARKET_FACTOR_BASE) * 2.2)
+        return clamp(
+            shock,
+            -float(BOND_SPREAD_WEEKLY_MOVE_CAP),
+            float(BOND_SPREAD_WEEKLY_MOVE_CAP),
+        )
+    week = int(getattr(world, "week", 0) or 0)
+    cache = getattr(world, "_bond_market_factor_cache", None)
+    if not isinstance(cache, dict) or int(cache.get("_week", -1)) != week:
+        cache = {"_week": week}
+        world._bond_market_factor_cache = cache
+    key = str(country_id or "") or "_"
+    hit = cache.get(key)
+    if hit is not None:
+        try:
+            return float(hit)
+        except (TypeError, ValueError):
+            pass
+    shock = _stock_laplace_noise(float(BOND_MARKET_FACTOR_BASE))
+    if random.random() < float(BOND_MARKET_FACTOR_JUMP_PROB):
+        shock += random.gauss(0.0, float(BOND_MARKET_FACTOR_BASE) * 2.2)
+    bias = 0.0
+    try:
+        if country_id:
+            spot = country_credit_score_spot(world, country_id)
+            spot_score = float(spot.get("score", 50.0) or 50.0)
+            credit_ma, _n = credit_score_52w_ma(
+                world, f"gov_{country_id}", spot_score)
+            # 신용 악화 → 스프레드 확대(양수)
+            bias += 0.30 * ((50.0 - float(credit_ma)) / 50.0)
+            country = world.countries.get(country_id)
+            if country is not None:
+                mrb = float(country_market_rate_bias(country) or 0.0)
+                bias += 0.25 * mrb
+    except Exception:
+        bias = 0.0
+    shock += 0.4 * float(bias) * float(BOND_MARKET_FACTOR_BASE)
+    shock = clamp(
+        shock,
+        -float(BOND_SPREAD_WEEKLY_MOVE_CAP),
+        float(BOND_SPREAD_WEEKLY_MOVE_CAP),
+    )
+    cache[key] = shock
+    return shock
+
+
 def bond_spread_delta_from_book(
     market: "BondMarketState",
     *,
     base_rate: float,
     fair_rate: Optional[float] = None,
+    apply_noise: bool = False,
+    market_factor: float = 0.0,
 ) -> float:
-    """주문장 수급 + 평균회귀 + 관성 + 바이어스 → 주간 스프레드 변동(%p)."""
+    """수급·공정회귀·추세레짐·시장충격·미시노이즈 → 주간 스프레드 변동(%p).
+
+    주식 stock_price_change_from_orders와 동형. 수급만으로 매주 비슷한 bp가
+    나오면 금리 차트가 직선처럼 보이므로, 전주 관성·소화주·두꺼운 꼬리 노이즈로
+    굴곡을 만든다. 예상 신호 경로는 apply_noise=False.
+    국가 공유충격(market_factor)은 메인에서 bond_draw_country_market_factor로
+    미리 뽑아 병렬 resolve에 넘긴다.
+    """
     total_demand = sum(float(o.quantity or 0.0) for o in (market.buy_orders or []))
     secondary_supply = 0.0
     treasury_supply = 0.0
@@ -14226,19 +14416,46 @@ def bond_spread_delta_from_book(
     # 미소화 신규 발행도 일부 매도압력으로 반영해 금리가 매력 구간으로 열리게 한다.
     effective_supply = secondary_supply + float(
         BOND_TREASURY_SUPPLY_FLOW_WEIGHT) * treasury_supply
-    flow_bp = bond_flow_spread_delta(
-        bond_sell_buy_rate_ratio(effective_supply, total_demand))
+    flow = bond_imbalance_spread_delta(effective_supply, total_demand)
+    flow = bond_streak_flow_damp(market, flow)
+    if apply_noise and abs(flow) > 1e-15:
+        jitter = clamp(float(BOND_FLOW_AMP_JITTER), 0.0, 0.95)
+        if jitter > 1e-15:
+            flow *= random.uniform(1.0 - jitter, 1.0 + jitter)
+    if apply_noise and abs(flow) > float(BOND_SPREAD_RANGE_EPS) * 0.5:
+        streak, sign = bond_recent_move_streak(market)
+        digest_p = float(BOND_DIGEST_WEEK_PROB)
+        if streak >= BOND_STREAK_DAMP_START and flow * sign > 0.0:
+            digest_p = min(
+                float(BOND_DIGEST_STREAK_PROB_CAP),
+                digest_p + float(BOND_DIGEST_STREAK_BONUS) * float(streak),
+            )
+        if random.random() < digest_p:
+            flow *= float(BOND_DIGEST_WEEK_SCALE)
+
     spread = bond_market_current_spread(market, base_rate)
     fair = float(fair_rate) if fair_rate is not None else 0.0
     mr_bp = 0.0
     if fair > 0.0:
         mr_bp = (fair - float(base_rate) - spread) * BOND_SPREAD_MEAN_REVERT
-    hist = getattr(market, "rate_change_history", None) or []
-    prev_chg = float(hist[-1] or 0.0) if hist else 0.0
-    trend_bp = prev_chg * BOND_SPREAD_TREND_PREV
-    bias_bp = market_invest_bias(market) * BOND_SPREAD_BIAS_SCALE
+
+    hist = list(getattr(market, "rate_change_history", None) or [])
+    prev_chg = float(hist[-1]) if hist else 0.0
+    flow_signal = flow + mr_bp
+    mixed = financial_regime_signed_change(
+        prev_chg,
+        flow_signal,
+        market_invest_bias(market),
+        move_cap=BOND_SPREAD_WEEKLY_MOVE_CAP,
+        gravity=0.0,
+    )
+
+    mf = float(market_factor or 0.0) if apply_noise else 0.0
+    noise = bond_microstructure_noise(market, apply_noise=apply_noise)
+
+    chg = mixed + float(BOND_MARKET_FACTOR_BETA) * mf + noise
     return clamp(
-        flow_bp + mr_bp + trend_bp + bias_bp,
+        chg,
         -BOND_SPREAD_WEEKLY_MOVE_CAP,
         BOND_SPREAD_WEEKLY_MOVE_CAP,
     )
@@ -15229,11 +15446,7 @@ def public_required_capacities(
 def state_youth_total(state: "State") -> float:
     total = 0.0
     for p in getattr(state, "pops", None) or []:
-        youth = float(getattr(p, "youth", 0.0) or 0.0)
-        if youth <= 1e-12:
-            cq = getattr(p, "children_queue", None) or []
-            youth = float(sum(cq)) if cq else 0.0
-        total += youth
+        total += float(getattr(p, "youth", 0.0) or 0.0)
     return total
 
 
@@ -16062,14 +16275,19 @@ def interpolate_sol_birth_rate(sol: float) -> float:
 
 
 def pop_weekly_birth_rate(
-    sol: float, edu_shares: Dict[str, float], health: float,
+    sol: float,
+    edu_shares: Dict[str, float],
+    health: float,
+    fertility_support_pct: float = 0.0,
 ) -> float:
-    """가임 코호트 주간 출산률. SoL × 학력보정 × 의료(바닥 있음)."""
+    """가임 코호트 주간 출산률. SoL × 학력보정 × 의료(바닥 있음) × 출산지원."""
     base_br = interpolate_sol_birth_rate(sol)
     edu_mod = 1.0 + pop_edu_shares_weighted_modifier(edu_shares)
     # 의료 0이어도 출산이 끊기지 않음. 의료는 주로 수명(사망)에 반영.
     health_birth = 0.55 + 0.45 * clamp(float(health), 0.0, 1.0)
-    return max(0.0, base_br * edu_mod * health_birth)
+    fert = 1.0 + POP_FERTILITY_SUPPORT_BIRTH_K * clamp(
+        float(fertility_support_pct or 0.0), 0.0, 100.0)
+    return max(0.0, base_br * edu_mod * health_birth * fert)
 
 
 def format_sol(sol: float) -> str:
@@ -16644,10 +16862,40 @@ def fin_shock_capture_policy(country: "Country") -> Dict[str, float]:
             getattr(country, "bank_cb_leverage_ratio_pct", DEFAULT_FINANCIAL_LEVERAGE_RATIO_PCT)
             or 0.0),
         "repo_none": 1.0 if country_repo_stance(country) == "none" else 0.0,
+        "pop_basic_guarantee_pct": float(
+            getattr(country, "pop_basic_guarantee_pct", 0.0) or 0.0),
+        "pop_bracket_support_low_pct": float(
+            getattr(country, "pop_bracket_support_low_pct", 0.0) or 0.0),
+        "pop_bracket_support_mid_pct": float(
+            getattr(country, "pop_bracket_support_mid_pct", 0.0) or 0.0),
+        "pop_bracket_support_high_pct": float(
+            getattr(country, "pop_bracket_support_high_pct", 0.0) or 0.0),
         "pop_basic_income_support_pct": float(
-            getattr(country, "pop_basic_income_support_pct", 0.0) or 0.0),
+            getattr(country, "pop_basic_guarantee_pct",
+                    getattr(country, "pop_basic_income_support_pct", 0.0)) or 0.0),
+        "pop_support_youth_pct": float(
+            getattr(country, "pop_support_youth_pct", 0.0) or 0.0),
+        "pop_support_working_pct": float(
+            getattr(country, "pop_support_working_pct", 0.0) or 0.0),
+        "pop_support_senior_pct": float(
+            getattr(country, "pop_support_senior_pct", 0.0) or 0.0),
+        "pop_unemployment_benefit_pct": float(
+            getattr(country, "pop_unemployment_benefit_pct", 0.0) or 0.0),
+        "pop_job_training_pct": float(
+            getattr(country, "pop_job_training_pct", 0.0) or 0.0),
+        "pop_education_support_pct": float(
+            getattr(country, "pop_education_support_pct", 0.0) or 0.0),
+        "pop_medical_support_pct": float(
+            getattr(country, "pop_medical_support_pct", 0.0) or 0.0),
+        "pop_fertility_support_pct": float(
+            getattr(country, "pop_fertility_support_pct", 0.0) or 0.0),
+        "pop_housing_relief_pct": float(
+            getattr(country, "pop_housing_relief_pct", 0.0) or 0.0),
+        "pop_retire_age": float(
+            getattr(country, "pop_retire_age", POP_RETIRE_AGE) or POP_RETIRE_AGE),
         "pop_universal_support_low_pct": float(
-            getattr(country, "pop_universal_support_low_pct", 0.0) or 0.0),
+            getattr(country, "pop_bracket_support_low_pct",
+                    getattr(country, "pop_universal_support_low_pct", 0.0)) or 0.0),
         "gov_bond_cb_purchase_remaining": float(
             getattr(country, "gov_bond_cb_purchase_remaining", 0.0) or 0.0),
         "gov_bond_auto_cb": (
@@ -16892,25 +17140,63 @@ def fin_shock_policy_jump_impulse(
         reasons.append(_fin_shock_reason("surprise", repo_s, extra))
         total += repo_s
 
-    old_basic = float(snap.get("pop_basic_income_support_pct", 0.0) or 0.0)
-    old_univ = float(snap.get("pop_universal_support_low_pct", 0.0) or 0.0)
+    def _snap_pct(key: str, *aliases: str) -> float:
+        for k in (key,) + aliases:
+            if k in snap:
+                return float(snap.get(k, 0.0) or 0.0)
+        return float(snap.get(key, 0.0) or 0.0)
+
+    old_basic = _snap_pct("pop_basic_guarantee_pct", "pop_basic_income_support_pct")
+    new_basic = float(now.get("pop_basic_guarantee_pct",
+                              now.get("pop_basic_income_support_pct", 0.0)) or 0.0)
+    old_youth = float(snap.get("pop_support_youth_pct", 0.0) or 0.0)
+    old_work = float(snap.get("pop_support_working_pct", 0.0) or 0.0)
+    old_senior = float(snap.get("pop_support_senior_pct", 0.0) or 0.0)
+    old_br_low = _snap_pct("pop_bracket_support_low_pct", "pop_universal_support_low_pct")
+    old_br_mid = float(snap.get("pop_bracket_support_mid_pct", 0.0) or 0.0)
+    old_br_high = float(snap.get("pop_bracket_support_high_pct", 0.0) or 0.0)
+    old_unemp = float(snap.get("pop_unemployment_benefit_pct", 0.0) or 0.0)
     wel = (
-        max(0.0, old_basic - now["pop_basic_income_support_pct"]) * 0.12
-        + max(0.0, old_univ - now["pop_universal_support_low_pct"]) * 0.06
+        max(0.0, old_basic - new_basic) * 0.12
+        + max(0.0, old_youth - now["pop_support_youth_pct"]) * 0.07
+        + max(0.0, old_work - now["pop_support_working_pct"]) * 0.06
+        + max(0.0, old_senior - now["pop_support_senior_pct"]) * 0.08
+        + max(0.0, old_br_low - float(now.get("pop_bracket_support_low_pct", 0.0) or 0.0)) * 0.08
+        + max(0.0, old_br_mid - float(now.get("pop_bracket_support_mid_pct", 0.0) or 0.0)) * 0.05
+        + max(0.0, old_br_high - float(now.get("pop_bracket_support_high_pct", 0.0) or 0.0)) * 0.03
+        + max(0.0, old_unemp - float(now.get("pop_unemployment_benefit_pct", 0.0) or 0.0)) * 0.07
     )
+    old_retire = float(snap.get("pop_retire_age", POP_RETIRE_AGE) or POP_RETIRE_AGE)
+    new_retire = float(now.get("pop_retire_age", POP_RETIRE_AGE) or POP_RETIRE_AGE)
+    if new_retire > old_retire + 0.25:
+        wel += min(6.0, (new_retire - old_retire) * 1.2)
     if wel > 0.4:
         wel_s = min(12.0, wel)
         bits = []
-        if now["pop_basic_income_support_pct"] + 0.05 < old_basic:
+        if new_basic + 0.05 < old_basic:
+            bits.append(f"기초보장 {old_basic:.0f}% → {new_basic:.0f}%")
+        if now["pop_support_youth_pct"] + 0.05 < old_youth:
             bits.append(
-                f"기초수급 {old_basic:.0f}% → {now['pop_basic_income_support_pct']:.0f}%"
+                f"청년지원 {old_youth:.0f}% → {now['pop_support_youth_pct']:.0f}%"
             )
-        if now["pop_universal_support_low_pct"] + 0.05 < old_univ:
+        if now["pop_support_working_pct"] + 0.05 < old_work:
             bits.append(
-                f"저소득 보편지원 {old_univ:.0f}% → {now['pop_universal_support_low_pct']:.0f}%"
+                f"근로지원 {old_work:.0f}% → {now['pop_support_working_pct']:.0f}%"
             )
+        if now["pop_support_senior_pct"] + 0.05 < old_senior:
+            bits.append(
+                f"노인지원 {old_senior:.0f}% → {now['pop_support_senior_pct']:.0f}%"
+            )
+        new_br_low = float(now.get("pop_bracket_support_low_pct", 0.0) or 0.0)
+        if new_br_low + 0.05 < old_br_low:
+            bits.append(f"저소득 재분배 {old_br_low:.0f}% → {new_br_low:.0f}%")
+        new_unemp = float(now.get("pop_unemployment_benefit_pct", 0.0) or 0.0)
+        if new_unemp + 0.05 < old_unemp:
+            bits.append(f"실업수당 {old_unemp:.0f}% → {new_unemp:.0f}%")
+        if new_retire > old_retire + 0.25:
+            bits.append(f"정년 {old_retire:.0f}세 → {new_retire:.0f}세")
         reasons.append(_fin_shock_reason(
-            "surprise", wel_s, "복지 급감", " · ".join(bits) or "복지 지원 축소"))
+            "surprise", wel_s, "복지·정년 급변", " · ".join(bits) or "복지 지원 축소"))
         total += wel_s
 
     cb_s = 0.0
@@ -19188,6 +19474,7 @@ class BondMarketState:
         self.buy_order_results: List[BuyResult] = []
         self.sell_order_results: List[SellResult] = []
         self.invest_bias: float = 0.0
+        self.realized_vol_ema: float = float(BOND_SPREAD_NOISE_BASE)
 
 
 class CallMarketState:
@@ -33491,7 +33778,7 @@ def expected_stock_return_signal(
 def expected_bond_rate_change_signal(
     market: "BondMarketState", macro_info: Dict[str, float],
 ) -> float:
-    """이번 주 체결 전 주문장 기반 예상 스프레드/%p 변동 (resolve_bond_market과 동형)."""
+    """이번 주 체결 전 주문장 기반 예상 스프레드/%p 변동 (노이즈 없는 결정적 선행 신호)."""
     info = macro_info or {}
     base = float(info.get("base_rate", 0.0) or 0.0)
     fair = info.get("fair_rate")
@@ -33504,7 +33791,7 @@ def expected_bond_rate_change_signal(
         base = float(getattr(market, "current_interest_rate", 0.0) or 0.0)
         fair_f = None
     return bond_spread_delta_from_book(
-        market, base_rate=base, fair_rate=fair_f)
+        market, base_rate=base, fair_rate=fair_f, apply_noise=False)
 
 
 def expected_bond_forward_rate(world: "World", market_key_id: str) -> float:
@@ -43315,14 +43602,19 @@ def resolve_bond_market(market: BondMarketState, macro_info: Dict[str, float]) -
     flow_supply = secondary_supply + float(
         BOND_TREASURY_SUPPLY_FLOW_WEIGHT) * treasury_supply
 
-    # FRN: 쿠폰 = 기준금리 + 스프레드. 수급·신용(공정)은 스프레드를 %p로 가산.
+    # FRN: 쿠폰 = 기준금리 + 스프레드. 주식과 동형 — 레짐·노이즈·소화주.
     base = float((macro_info or {}).get("base_rate", 3.5) or 3.5)
     fair = float((macro_info or {}).get("fair_rate", 0.0) or 0.0)
     if fair <= 1e-12:
         fair = base
+    try:
+        mf = float((macro_info or {}).get("market_factor", 0.0) or 0.0)
+    except (TypeError, ValueError):
+        mf = 0.0
     spread = bond_market_current_spread(market, base)
     delta = bond_spread_delta_from_book(
-        market, base_rate=base, fair_rate=fair)
+        market, base_rate=base, fair_rate=fair,
+        apply_noise=True, market_factor=mf)
     next_spread = clamp(
         spread + delta, BOND_SPREAD_FLOOR, BOND_SPREAD_CEIL)
     market.current_spread = next_spread
@@ -45059,7 +45351,12 @@ class Company:
                 _st = _world.states.get(getattr(self, "home_state", None))
                 _cty = _world.countries.get(_st.country_id) if _st else None
             _wh = company_work_hours_output_multiplier(_cty)
-            _lab = clamp(labor_ratio + company_vocational_labor_bonus(_cty), 0.0, 1.15)
+            _lab = clamp(
+                labor_ratio
+                + company_vocational_labor_bonus(_cty)
+                + country_pop_job_training_labor_bonus(_cty),
+                0.0, 1.15,
+            )
             coop_bonus = clamp(
                 float((getattr(self, "coop_yield_bonus", {}) or {}).get(product, 0.0) or 0.0),
                 0.0,
@@ -54237,6 +54534,10 @@ class POP:
         self.last_property_tax_paid = 0.0
         self.last_consumption_tax_paid = 0.0
         self.last_welfare_received = 0.0
+        self.last_welfare_claimed = 0.0
+        self.last_welfare_cut_ratio = 1.0
+        self.last_income_bracket: str = "mid"
+        self.last_income_pc: float = 0.0
 
     def allows_new_investment(self) -> bool:
         return (
@@ -54859,9 +55160,12 @@ class POP:
                 self.adult_age_queue[i] = 0.0
             self.adult_age_queue[0] = float(total_adults)
 
-    def sync_lifecycle_from_age(self, mean_age: float) -> None:
+    def sync_lifecycle_from_age(
+        self, mean_age: float, retire_age: Optional[float] = None,
+    ) -> None:
         """mean_age에 맞춰 youth / 노동 / seniors 버킷을 재배치."""
         self._cached_mean_age = float(mean_age)
+        ra = float(retire_age if retire_age is not None else POP_RETIRE_AGE)
         total = self.total_population()
         if total <= POP_EMPTY_EPS:
             self.youth = 0.0
@@ -54878,7 +55182,7 @@ class POP:
             self.adult_self_employed = 0.0
             self.seniors = 0.0
             self.seniors_queue = [0.0] * len(self.seniors_queue)
-        elif mean_age < POP_RETIRE_AGE:
+        elif mean_age < ra:
             labor = (
                 self.adult_employed + self.adult_unemployed + self.adult_self_employed)
             if labor <= POP_EMPTY_EPS:
@@ -54910,11 +55214,17 @@ class POP:
         self.qualification = max(shares.items(), key=lambda kv: kv[1])[0]
         self.education_modifier = pop_edu_shares_weighted_modifier(shares)
 
-    def apply_headcount(self, n: float, mean_age: Optional[float] = None) -> None:
+    def apply_headcount(
+        self,
+        n: float,
+        mean_age: Optional[float] = None,
+        retire_age: Optional[float] = None,
+    ) -> None:
         """총인구를 n으로 두고 생애주기 버킷에 배치."""
         n = max(0.0, float(n))
         self.size = max(1, int(n)) if n > 0 else 0
         age = float(mean_age if mean_age is not None else getattr(self, "_cached_mean_age", 40.0))
+        ra = float(retire_age if retire_age is not None else POP_RETIRE_AGE)
         self.youth = 0.0
         self.adult_employed = 0.0
         self.adult_unemployed = 0.0
@@ -54922,13 +55232,13 @@ class POP:
         self.seniors = 0.0
         if age < POP_YOUTH_AGE_MAX:
             self.youth = n
-        elif age < POP_RETIRE_AGE:
+        elif age < ra:
             self.adult_employed = n * 0.7
             self.adult_unemployed = n * 0.2
             self.adult_self_employed = n * 0.1
         else:
             self.seniors = n
-        self.sync_lifecycle_from_age(age)
+        self.sync_lifecycle_from_age(age, retire_age=ra)
 
     @property
     def financial_literacy(self) -> float:
@@ -54936,14 +55246,8 @@ class POP:
         return sum(shares.get(q, 0.0) * POP_EDU_LITERACY.get(q, 0.0) for q in POP_QUALIFICATION_ORDER)
 
     def total_population(self) -> float:
-        # youth가 주 스톡 — children_queue(레거시 936칸) 전체 sum은 핫패스에서 회피
-        youth = self.youth
-        if youth <= 1e-12:
-            cq = self.children_queue
-            if cq and cq[0] > 1e-12:
-                youth = sum(cq)
         return (
-            youth + self.adult_unemployed
+            float(self.youth or 0.0) + self.adult_unemployed
             + self.adult_employed + self.adult_self_employed + self.seniors
         )
 
@@ -56315,6 +56619,8 @@ class POP:
         access_high: float,
         *,
         world: Optional["World"] = None,
+        fertility_support_pct: float = 0.0,
+        retire_age: Optional[float] = None,
     ):
         """코호트 주간 갱신: EP·학력확정·사망. 출산은 World가 자녀 코호트에 배분.
 
@@ -56322,7 +56628,7 @@ class POP:
         """
         mean_age = pop_mean_age(self, world)
         self._cached_mean_age = mean_age
-        self.sync_lifecycle_from_age(mean_age)
+        self.sync_lifecycle_from_age(mean_age, retire_age=retire_age)
 
         weekly_ep = access_basic * 1.0 + access_high * 0.5
         if self.sol >= 7:
@@ -56357,7 +56663,8 @@ class POP:
                 fertile = self.total_population()
             births = max(
                 0.0,
-                fertile * pop_weekly_birth_rate(self.sol, self.edu_shares, health),
+                fertile * pop_weekly_birth_rate(
+                    self.sol, self.edu_shares, health, fertility_support_pct),
             )
         self.last_births = births
 
@@ -57023,6 +57330,23 @@ def aggregate_pop_stats(pops: List[POP], world: Optional["World"] = None) -> Dic
          for v in gov_by_cohort_acc.values()),
         key=lambda r: (float(r.get("birth_year_start", 0) or 0), str(r.get("label", ""))),
     )
+    lifecycle_youth = 0.0
+    lifecycle_working = 0.0
+    lifecycle_senior = 0.0
+    welfare_claimed = 0.0
+    welfare_paid = 0.0
+    for p in pops:
+        n = p.total_population()
+        if n <= 1e-9:
+            continue
+        heads = pop_lifecycle_welfare_heads(p, world)
+        lifecycle_youth += float(heads.get("youth", 0.0) or 0.0)
+        lifecycle_working += float(heads.get("working", 0.0) or 0.0)
+        lifecycle_senior += float(heads.get("senior", 0.0) or 0.0)
+        welfare_claimed += float(getattr(p, "last_welfare_claimed", 0.0) or 0.0)
+        welfare_paid += float(getattr(p, "last_welfare_received", 0.0) or 0.0)
+    welfare_cut_ratio = (
+        welfare_paid / welfare_claimed if welfare_claimed > 1e-9 else 1.0)
     gov_den = max(gov_pop_w, 1e-9)
     return {
         "layer_count": len(pops),
@@ -57056,6 +57380,12 @@ def aggregate_pop_stats(pops: List[POP], world: Optional["World"] = None) -> Dic
         "employment_by_employer": _merge_pop_source_maps(pops, "employment_by_employer"),
         "by_qualification": by_qual,
         "by_cohort": by_cohort,
+        "lifecycle_youth": round(lifecycle_youth, 1),
+        "lifecycle_working": round(lifecycle_working, 1),
+        "lifecycle_senior": round(lifecycle_senior, 1),
+        "welfare_claimed_total": round(welfare_claimed, 2),
+        "welfare_paid_total": round(welfare_paid, 2),
+        "welfare_cut_ratio": round(welfare_cut_ratio, 4),
         **{k: round(v, 1) for k, v in financial.items()},
         "avg_wealth": round(financial["total_wealth"] / max(total, 1.0), 1),
     }
@@ -57174,7 +57504,7 @@ def format_pop_stats_text(
                 f"\n  {format_pop_weekly_finance_text(q['weekly_income'], q['weekly_expense'], q.get('avg_need_score', 0.0), q.get('weekly_investment', 0.0))}"
             )
         lines.append(
-            f"· 학력구성 {qual}: 인구환산 {q['population']:,.0f} · SoL {format_sol(q['avg_sol'])} · "
+            f"· 학력구성(edu_shares×인구) {qual}: 인구환산 {q['population']:,.0f} · SoL {format_sol(q['avg_sol'])} · "
             f"노동환산 {q.get('adults', 0):,.0f} "
             f"/ 실업 {q['unemployed']:,.0f} · "
             f"재산 {q.get('total_wealth', 0):,.0f} (1인당 {q.get('avg_wealth', 0):,.0f})"
@@ -58102,6 +58432,8 @@ def compute_pop_gov_opinion_target(
     pub = clamp((float(public_score) - 5.0) / 5.0, -1.0, 1.0)
     mw_sig = _pop_gov_min_wage_signal(country)
     leftover_hardship = _pop_residual_hardship(pop, essential)
+    welfare_cut = clamp(
+        1.0 - float(getattr(pop, "last_welfare_cut_ratio", 1.0) or 1.0), 0.0, 1.0)
 
     food_exp = _pop_expense_for_items(pop, POP_GOV_FOOD_ITEMS)
     housing_exp = (
@@ -58153,6 +58485,11 @@ def compute_pop_gov_opinion_target(
         + 0.30 * _fill_to_signal(housing_fill),
         -1.0, 1.0,
     )
+    if country is not None:
+        house_sig = clamp(
+            house_sig + country_pop_housing_relief_fill(country) * 0.35,
+            -1.0, 1.0,
+        )
     util_sig = clamp(
         0.50 * _burden_to_signal(util_share, 0.08, 0.08)
         + 0.50 * _yoy_to_signal(util_yoy if util_yoy is not None else cpi_yoy),
@@ -58203,6 +58540,19 @@ def compute_pop_gov_opinion_target(
         youth_welfare = parent_sup if bucket == "youth" else parent_sup * 0.25
         welfare_share = (welfare + youth_welfare) / weekly_income
         save_b = clamp(save_sig + 0.25 * welfare_share, -1.0, 1.0)
+        tax_b = tax_sig
+        if welfare_cut > 1e-6:
+            cut_w = {
+                "youth": 0.38,
+                "seniors": 0.42,
+                "unemployed": 0.32,
+                "employed": 0.18,
+                "self_employed": 0.15,
+            }.get(bucket, 0.22)
+            cut_sig = clamp(-welfare_cut * cut_w * 2.2, -1.0, 0.0)
+            tax_b = clamp(tax_b + cut_sig * 0.55, -1.0, 1.0)
+            save_b = clamp(save_b + cut_sig * 0.75, -1.0, 1.0)
+            wage_sig = clamp(wage_sig + cut_sig * 0.35, -1.0, 1.0)
         rel = clamp((sol - float(national_avg_sol)) / 3.0, -1.0, 1.0)
         rel *= 1.15 if rel < 0.0 else 0.65
         rel = clamp(rel, -1.0, 1.0)
@@ -58212,7 +58562,7 @@ def compute_pop_gov_opinion_target(
             "wages": wage_sig,
             "housing": house_sig,
             "food": food_sig,
-            "tax": tax_sig,
+            "tax": tax_b,
             "savings": save_b,
             "healthcare": health_sig,
             "education": clamp(edu_sig * (1.0 if bucket != "youth" else 1.0), -1.0, 1.0),
@@ -59535,6 +59885,7 @@ class RetailCompany(Company):
         consumption_tax_rate: float = 0.0,
         commerce_sector: Optional["SelfEmployedSector"] = None,
         peer_retailers: Optional[List["RetailCompany"]] = None,
+        country: Optional["Country"] = None,
     ) -> None:
         """POP 직접 매수(재화+소매 서비스 등) 정산.
 
@@ -59601,15 +59952,63 @@ class RetailCompany(Company):
             )
             essential_fulfillments = pop.calculate_essential_need_fulfillments(
                 filled_items, pop_count)
+            housing_relief = country_pop_housing_relief_fill(country)
+            if housing_relief > 1e-9 and "거주" in essential_fulfillments:
+                essential_fulfillments["거주"] = clamp(
+                    float(essential_fulfillments["거주"]) + housing_relief, 0.0, 1.0)
             pop.last_essential_need_fulfillment = essential_fulfillments
             pop.last_essential_fulfillment = (
                 min(essential_fulfillments.values())
                 if essential_fulfillments else 1.0
             )
+            if housing_relief > 1e-9 and pop.last_need_details:
+                for row in pop.last_need_details:
+                    if isinstance(row, dict) and str(row.get("name") or "") == "거주":
+                        row["ratio"] = clamp(
+                            float(row.get("ratio") or 0.0) + housing_relief, 0.0, 1.0)
+                        break
             pop.last_medical_fulfillment = pop.calculate_single_need_fulfillment(
                 "의료", filled_items, pop_count)
             pop.last_education_fulfillment = pop.calculate_single_need_fulfillment(
                 "교육", filled_items, pop_count)
+            med_relief = country_pop_medical_relief_fill(country)
+            edu_relief = country_pop_education_relief_fill(country)
+            if med_relief > 1e-9:
+                pop.last_medical_fulfillment = clamp(
+                    float(pop.last_medical_fulfillment) + med_relief, 0.0, 1.0)
+            if edu_relief > 1e-9:
+                pop.last_education_fulfillment = clamp(
+                    float(pop.last_education_fulfillment) + edu_relief, 0.0, 1.0)
+            if (med_relief > 1e-9 or edu_relief > 1e-9) and pop.last_need_details:
+                for row in pop.last_need_details:
+                    if not isinstance(row, dict):
+                        continue
+                    name = str(row.get("name") or "")
+                    if name == "의료" and med_relief > 1e-9:
+                        row["ratio"] = clamp(
+                            float(row.get("ratio") or 0.0) + med_relief, 0.0, 1.0)
+                    elif name == "교육" and edu_relief > 1e-9:
+                        row["ratio"] = clamp(
+                            float(row.get("ratio") or 0.0) + edu_relief, 0.0, 1.0)
+            med_relief = country_pop_medical_relief_fill(country)
+            edu_relief = country_pop_education_relief_fill(country)
+            if med_relief > 1e-9:
+                pop.last_medical_fulfillment = clamp(
+                    float(pop.last_medical_fulfillment) + med_relief, 0.0, 1.0)
+            if edu_relief > 1e-9:
+                pop.last_education_fulfillment = clamp(
+                    float(pop.last_education_fulfillment) + edu_relief, 0.0, 1.0)
+            if (med_relief > 1e-9 or edu_relief > 1e-9) and pop.last_need_details:
+                for row in pop.last_need_details:
+                    if not isinstance(row, dict):
+                        continue
+                    nm = str(row.get("name") or "")
+                    if nm == "의료" and med_relief > 1e-9:
+                        row["ratio"] = clamp(
+                            float(row.get("ratio") or 0.0) + med_relief, 0.0, 1.0)
+                    elif nm == "교육" and edu_relief > 1e-9:
+                        row["ratio"] = clamp(
+                            float(row.get("ratio") or 0.0) + edu_relief, 0.0, 1.0)
             fulfill_ratio = clamp(float(pop.last_need_score or 0.0) / 10.0, 0.0, 1.0)
             ideal_need = float(getattr(pop, "last_ideal_consumption_cost", 0.0) or 0.0)
             pop.last_demand_shortfall_cost = max(0.0, ideal_need * (1.0 - fulfill_ratio))
@@ -62103,11 +62502,32 @@ class Country:
         self.sme_policy_intensity: Dict[str, float] = {k: 0.0 for k in SME_POLICY_KEYS}
         self.corp_policy_intensity: Dict[str, float] = {k: 0.0 for k in CORP_POLICY_KEYS}
         self.strategic_industry_intensity: Dict[str, float] = {}
-        # 인구 복지: 기초 수급(미충족 수요 부족분 커버 0~100%) · 소득분위 보편 지원(수요 필요액 0~200%)
+        # 인구 복지 (재분배·기초보장·생애주기·노동·교육의료)
+        self.pop_bracket_support_low_pct: float = 0.0
+        self.pop_bracket_support_mid_pct: float = 0.0
+        self.pop_bracket_support_high_pct: float = 0.0
+        self.pop_basic_guarantee_pct: float = 0.0  # 저소득 부족분만
+        self.pop_support_youth_pct: float = 0.0
+        self.pop_support_working_pct: float = 0.0
+        self.pop_support_senior_pct: float = 0.0
+        self.pop_fertility_support_pct: float = 0.0
+        self.pop_retire_age: float = POP_RETIRE_AGE
+        self.pop_housing_relief_pct: float = 0.0
+        self.pop_unemployment_benefit_pct: float = 0.0
+        self.pop_job_training_pct: float = 0.0
+        self.pop_education_support_pct: float = 0.0
+        self.pop_medical_support_pct: float = 0.0
+        # 구 필드 alias (migrate에서 이전)
         self.pop_basic_income_support_pct: float = 0.0
         self.pop_universal_support_low_pct: float = 0.0
         self.pop_universal_support_mid_pct: float = 0.0
         self.pop_universal_support_high_pct: float = 0.0
+        self._pop_welfare_migrated: bool = False
+        self._pop_welfare_v2_migrated: bool = False
+        self.last_pop_welfare_claimed_total: float = 0.0
+        self.last_pop_welfare_paid_total: float = 0.0
+        self.last_pop_welfare_cut_ratio: float = 1.0
+        self.last_pop_welfare_cap: float = 0.0
         self.gov_bond_balance: float = 0.0
         self.gov_bond_pending_issue: float = 0.0
         self.gov_bond_outstanding_issue: float = 0.0
@@ -62386,12 +62806,7 @@ def country_policy_point_upkeep_items(
                 "label": f"{name} 국유화",
                 "weekly": float(POLICY_POINT_UPKEEP_NATIONALIZED),
             })
-    welfare = (
-        float(getattr(country, "pop_basic_income_support_pct", 0.0) or 0.0)
-        + float(getattr(country, "pop_universal_support_low_pct", 0.0) or 0.0)
-        + float(getattr(country, "pop_universal_support_mid_pct", 0.0) or 0.0)
-        + float(getattr(country, "pop_universal_support_high_pct", 0.0) or 0.0)
-    )
+    welfare = country_pop_welfare_policy_intensity(country)
     if welfare > 1e-9:
         items.append({
             "key": "welfare", "label": "인구 복지",
@@ -63882,6 +64297,361 @@ def pop_mean_age(pop: "POP", world: Optional["World"] = None) -> float:
     mid = bys + (POP_COHORT_YEARS - 1) * 0.5
     year = world_calendar_year(world) if world is not None else bys + 40
     return max(0.0, float(year) - mid)
+
+
+def country_pop_retire_age(country: Optional["Country"]) -> float:
+    if country is None:
+        return POP_RETIRE_AGE
+    raw = float(getattr(country, "pop_retire_age", POP_RETIRE_AGE) or POP_RETIRE_AGE)
+    return clamp(raw, 60.0, 70.0)
+
+
+def migrate_pop_welfare_policy_fields(country: "Country") -> None:
+    """구 필드 → v2(재분배·기초보장) 마이그레이션. alias는 매번 동기화."""
+    # v1: 구 분위 보편지원이 생애주기만 있던 시절 1회 처리 플래그
+    if not getattr(country, "_pop_welfare_migrated", False):
+        if float(getattr(country, "pop_retire_age", 0.0) or 0.0) <= 1e-9:
+            country.pop_retire_age = POP_RETIRE_AGE
+        country._pop_welfare_migrated = True
+
+    if not getattr(country, "_pop_welfare_v2_migrated", False):
+        # 기초수급 → 기초보장
+        old_basic = float(getattr(country, "pop_basic_income_support_pct", 0.0) or 0.0)
+        cur_g = float(getattr(country, "pop_basic_guarantee_pct", 0.0) or 0.0)
+        if cur_g <= 1e-12 and old_basic > 1e-12:
+            country.pop_basic_guarantee_pct = clamp(old_basic, 0.0, 100.0)
+
+        # 구 분위 보편지원 → bracket_support (wipe 하지 않고 승격)
+        for old_k, new_k in (
+            ("pop_universal_support_low_pct", "pop_bracket_support_low_pct"),
+            ("pop_universal_support_mid_pct", "pop_bracket_support_mid_pct"),
+            ("pop_universal_support_high_pct", "pop_bracket_support_high_pct"),
+        ):
+            old_v = float(getattr(country, old_k, 0.0) or 0.0)
+            new_v = float(getattr(country, new_k, 0.0) or 0.0)
+            if new_v <= 1e-12 and old_v > 1e-12:
+                setattr(country, new_k, clamp(old_v, 0.0, 200.0))
+        country._pop_welfare_v2_migrated = True
+
+    # 동기화 alias (구 키 읽기용) — 매 호출
+    country.pop_basic_income_support_pct = float(
+        getattr(country, "pop_basic_guarantee_pct", 0.0) or 0.0)
+    country.pop_universal_support_low_pct = float(
+        getattr(country, "pop_bracket_support_low_pct", 0.0) or 0.0)
+    country.pop_universal_support_mid_pct = float(
+        getattr(country, "pop_bracket_support_mid_pct", 0.0) or 0.0)
+    country.pop_universal_support_high_pct = float(
+        getattr(country, "pop_bracket_support_high_pct", 0.0) or 0.0)
+
+
+def country_pop_income_median(world: "World", country: "Country") -> float:
+    """복지용 1인당 주간소득 중위값."""
+    incomes: List[float] = []
+    for st in world.states.values():
+        if st.country_id != country.id:
+            continue
+        for pop in st.pops:
+            n = pop.total_population()
+            if n <= 1e-9:
+                continue
+            incomes.append(max(0.0, float(pop.last_week_income or 0.0)) / n)
+    if not incomes:
+        return 0.0
+    incomes.sort()
+    mid = len(incomes) // 2
+    if len(incomes) % 2 == 1:
+        return incomes[mid]
+    return 0.5 * (incomes[mid - 1] + incomes[mid])
+
+
+def pop_welfare_income_bracket(per_capita: float, median: float) -> str:
+    """복지 전용 소득분위. 세금 구간과 분리 (low <0.80× / mid / high >1.25×)."""
+    if median <= 1e-12:
+        return "mid"
+    ratio = float(per_capita) / float(median)
+    if ratio < POP_WELFARE_BRACKET_LOW_MAX:
+        return "low"
+    if ratio > POP_WELFARE_BRACKET_HIGH_MIN:
+        return "high"
+    return "mid"
+
+
+def country_pop_welfare_cap(world: "World", country: "Country") -> float:
+    tax = max(0.0, float(getattr(country, "weekly_tax_revenue", 0.0) or 0.0))
+    if tax <= 1e-9:
+        tax = max(0.0, float(getattr(country, "last_weekly_tax_revenue", 0.0) or 0.0))
+    gdp = max(0.0, float(country_gdp_breakdown(world, country.id).get("gdp", 0.0) or 0.0))
+    return max(tax * POP_WELFARE_CAP_TAX_ALPHA, gdp * POP_WELFARE_CAP_GDP_BETA)
+
+
+def pop_lifecycle_welfare_heads(
+    pop: "POP", world: Optional["World"] = None,
+) -> Dict[str, float]:
+    """복지 지급용 생애주기 인구 (youth / working / senior, 상호배타)."""
+    mean_age = pop_mean_age(pop, world)
+    youth_h = max(0.0, float(getattr(pop, "youth", 0.0) or 0.0))
+    labor = (
+        float(getattr(pop, "adult_employed", 0.0) or 0.0)
+        + float(getattr(pop, "adult_unemployed", 0.0) or 0.0)
+        + float(getattr(pop, "adult_self_employed", 0.0) or 0.0)
+    )
+    seniors_h = max(0.0, float(getattr(pop, "seniors", 0.0) or 0.0))
+    early_working = 0.0
+    if POP_YOUTH_AGE_MAX <= mean_age < POP_YOUTH_SUPPORT_AGE_MAX:
+        early_working = labor
+        labor = 0.0
+    return {
+        "youth": youth_h + early_working,
+        "working": labor,
+        "senior": seniors_h,
+    }
+
+
+def country_pop_housing_relief_fill(country: Optional["Country"]) -> float:
+    if country is None:
+        return 0.0
+    pct = clamp(float(getattr(country, "pop_housing_relief_pct", 0.0) or 0.0), 0.0, 100.0)
+    return clamp(pct / 100.0 * POP_HOUSING_RELIEF_FILL_K, 0.0, POP_HOUSING_RELIEF_FILL_K)
+
+
+def country_pop_education_relief_fill(country: Optional["Country"]) -> float:
+    if country is None:
+        return 0.0
+    pct = clamp(float(getattr(country, "pop_education_support_pct", 0.0) or 0.0), 0.0, 100.0)
+    return clamp(pct / 100.0 * POP_EDU_RELIEF_FILL_K, 0.0, POP_EDU_RELIEF_FILL_K)
+
+
+def country_pop_medical_relief_fill(country: Optional["Country"]) -> float:
+    if country is None:
+        return 0.0
+    pct = clamp(float(getattr(country, "pop_medical_support_pct", 0.0) or 0.0), 0.0, 100.0)
+    return clamp(pct / 100.0 * POP_MED_RELIEF_FILL_K, 0.0, POP_MED_RELIEF_FILL_K)
+
+
+def country_pop_job_training_labor_bonus(country: Optional["Country"]) -> float:
+    """인구 직업훈련 → 노동 fill 가산 (0 → 최대 POP_JOB_TRAINING_LABOR_BONUS)."""
+    if country is None:
+        return 0.0
+    intens = clamp(
+        float(getattr(country, "pop_job_training_pct", 0.0) or 0.0), 0.0, 100.0) / 100.0
+    return POP_JOB_TRAINING_LABOR_BONUS * intens
+
+
+def country_pop_welfare_policy_intensity(country: "Country") -> float:
+    migrate_pop_welfare_policy_fields(country)
+    return (
+        float(getattr(country, "pop_bracket_support_low_pct", 0.0) or 0.0)
+        + float(getattr(country, "pop_bracket_support_mid_pct", 0.0) or 0.0)
+        + float(getattr(country, "pop_bracket_support_high_pct", 0.0) or 0.0)
+        + float(getattr(country, "pop_basic_guarantee_pct", 0.0) or 0.0)
+        + float(getattr(country, "pop_support_youth_pct", 0.0) or 0.0)
+        + float(getattr(country, "pop_support_working_pct", 0.0) or 0.0)
+        + float(getattr(country, "pop_support_senior_pct", 0.0) or 0.0)
+        + float(getattr(country, "pop_unemployment_benefit_pct", 0.0) or 0.0)
+        + float(getattr(country, "pop_fertility_support_pct", 0.0) or 0.0) * 0.5
+        + float(getattr(country, "pop_housing_relief_pct", 0.0) or 0.0) * 0.5
+        + float(getattr(country, "pop_job_training_pct", 0.0) or 0.0) * 0.5
+        + float(getattr(country, "pop_education_support_pct", 0.0) or 0.0) * 0.5
+        + float(getattr(country, "pop_medical_support_pct", 0.0) or 0.0) * 0.5
+    )
+
+
+def pop_welfare_bracket_summary(
+    world: "World", country: "Country",
+) -> Dict[str, Any]:
+    """UI용 분위별 인구·중위소득 요약."""
+    median = country_pop_income_median(world, country)
+    counts = {"low": 0.0, "mid": 0.0, "high": 0.0}
+    for st in world.states.values():
+        if st.country_id != country.id:
+            continue
+        for pop in st.pops:
+            n = pop.total_population()
+            if n <= 1e-9:
+                continue
+            pc = max(0.0, float(pop.last_week_income or 0.0)) / n
+            br = pop_welfare_income_bracket(pc, median)
+            counts[br] = counts.get(br, 0.0) + n
+    total = sum(counts.values())
+    return {
+        "median_income_pc": round(median, 4),
+        "population_by_bracket": {k: round(v, 1) for k, v in counts.items()},
+        "share_by_bracket": {
+            k: round(v / total, 4) if total > 1e-9 else 0.0
+            for k, v in counts.items()
+        },
+    }
+
+
+def pop_welfare_build_planned_payments(
+    world: "World",
+    country: "Country",
+) -> List[Tuple["POP", float, str]]:
+    """당주 복지 청구액(삭감 전). 항목은 곱하지 않고 합산."""
+    migrate_pop_welfare_policy_fields(country)
+
+    bracket_rates = {
+        "low": clamp(
+            float(getattr(country, "pop_bracket_support_low_pct", 0.0) or 0.0),
+            0.0, 200.0) / 100.0,
+        "mid": clamp(
+            float(getattr(country, "pop_bracket_support_mid_pct", 0.0) or 0.0),
+            0.0, 200.0) / 100.0,
+        "high": clamp(
+            float(getattr(country, "pop_bracket_support_high_pct", 0.0) or 0.0),
+            0.0, 200.0) / 100.0,
+    }
+    basic_pct = clamp(
+        float(getattr(country, "pop_basic_guarantee_pct", 0.0) or 0.0), 0.0, 100.0) / 100.0
+    youth_rate = clamp(
+        float(getattr(country, "pop_support_youth_pct", 0.0) or 0.0), 0.0, 200.0) / 100.0
+    working_rate = clamp(
+        float(getattr(country, "pop_support_working_pct", 0.0) or 0.0), 0.0, 200.0) / 100.0
+    senior_rate = clamp(
+        float(getattr(country, "pop_support_senior_pct", 0.0) or 0.0), 0.0, 200.0) / 100.0
+    unemp_rate = clamp(
+        float(getattr(country, "pop_unemployment_benefit_pct", 0.0) or 0.0),
+        0.0, 200.0) / 100.0
+    fert_pct = clamp(
+        float(getattr(country, "pop_fertility_support_pct", 0.0) or 0.0), 0.0, 100.0) / 100.0
+    train_pct = clamp(
+        float(getattr(country, "pop_job_training_pct", 0.0) or 0.0), 0.0, 100.0) / 100.0
+    edu_pct = clamp(
+        float(getattr(country, "pop_education_support_pct", 0.0) or 0.0), 0.0, 100.0) / 100.0
+    med_pct = clamp(
+        float(getattr(country, "pop_medical_support_pct", 0.0) or 0.0), 0.0, 100.0) / 100.0
+
+    any_on = (
+        sum(bracket_rates.values())
+        + basic_pct + youth_rate + working_rate + senior_rate
+        + unemp_rate + fert_pct + train_pct + edu_pct + med_pct
+    ) > 1e-12
+    if not any_on:
+        return []
+
+    median_pc = country_pop_income_median(world, country)
+    bracket_labels = {"low": "저소득", "mid": "중산층", "high": "고소득"}
+    lifecycle_labels = {
+        "youth": "청년지원",
+        "working": "근로지원",
+        "senior": "노인지원",
+    }
+    lifecycle_rates = {
+        "youth": youth_rate,
+        "working": working_rate,
+        "senior": senior_rate,
+    }
+    planned: List[Tuple["POP", float, str]] = []
+
+    for st in world.states.values():
+        if st.country_id != country.id:
+            continue
+        for pop in st.pops:
+            pop_n = pop.total_population()
+            if pop_n <= 1e-9:
+                continue
+            ideal = float(getattr(pop, "last_ideal_consumption_cost", 0.0) or 0.0)
+            need_sc = clamp(
+                float(getattr(pop, "last_need_score", 10.0) or 10.0), 0.0, 10.0)
+            if ideal <= 1e-12:
+                ideal = max(
+                    float(pop.last_week_income or 0.0),
+                    pop_n * POP_CONSUMPTION_MIN_FALLBACK,
+                )
+            stored_short = float(
+                getattr(pop, "last_demand_shortfall_cost", 0.0) or 0.0)
+            score_short = ideal * (1.0 - need_sc / 10.0)
+            shortfall = max(stored_short, score_short)
+
+            income_base = max(0.0, float(pop.last_week_income or 0.0))
+            per_capita = income_base / pop_n if pop_n > 1e-9 else 0.0
+            bracket = pop_welfare_income_bracket(per_capita, median_pc)
+            pop.last_income_bracket = bracket
+            pop.last_income_pc = per_capita
+            br_lab = bracket_labels.get(bracket, bracket)
+
+            # 1) 소득분위 재분배
+            br_rate = bracket_rates.get(bracket, 0.0)
+            if br_rate > 1e-12 and ideal > 1e-12:
+                amt = ideal * br_rate
+                if amt > 1e-9:
+                    planned.append((pop, amt, f"분위지원({br_lab})"))
+
+            # 2) 기초보장 — 저소득 부족분만
+            if bracket == "low" and basic_pct > 1e-12 and shortfall > 1e-12:
+                amt = shortfall * basic_pct
+                if amt > 1e-9:
+                    planned.append((pop, amt, "기초보장"))
+
+            # 3) 생애주기 가산
+            heads = pop_lifecycle_welfare_heads(pop, world)
+            mean_age = pop_mean_age(pop, world)
+            for key, rate in lifecycle_rates.items():
+                if rate <= 1e-12:
+                    continue
+                h = float(heads.get(key, 0.0) or 0.0)
+                if h <= 1e-9:
+                    continue
+                bucket_ideal = ideal * (h / pop_n)
+                if bucket_ideal <= 1e-12:
+                    continue
+                amt = bucket_ideal * rate
+                if amt > 1e-9:
+                    planned.append((pop, amt, lifecycle_labels[key]))
+
+            # 4) 실업수당
+            unemp_h = float(getattr(pop, "adult_unemployed", 0.0) or 0.0)
+            if unemp_rate > 1e-12 and unemp_h > 1e-9:
+                ref = max(POP_CONSUMPTION_MIN_FALLBACK, ideal / pop_n if pop_n > 1e-9 else 0.0)
+                amt = ref * unemp_h * unemp_rate
+                if amt > 1e-9:
+                    planned.append((pop, amt, "실업수당"))
+
+            # 5) 직업훈련비
+            if train_pct > 1e-12 and unemp_h > 1e-9:
+                ref = max(POP_CONSUMPTION_MIN_FALLBACK, ideal / pop_n if pop_n > 1e-9 else 0.0)
+                amt = ref * unemp_h * train_pct * 0.35
+                if amt > 1e-9:
+                    planned.append((pop, amt, "직업훈련"))
+
+            # 6) 교육·의료 보조
+            if edu_pct > 1e-12:
+                edu_f = clamp(
+                    float(getattr(pop, "last_education_fulfillment", 0.5) or 0.5), 0.0, 1.0)
+                edu_short = ideal * max(0.0, 1.0 - edu_f) * 0.25
+                amt = edu_short * edu_pct
+                if amt > 1e-9:
+                    planned.append((pop, amt, "교육비 보조"))
+            if med_pct > 1e-12:
+                med_f = clamp(
+                    float(getattr(pop, "last_medical_fulfillment", 0.5) or 0.5), 0.0, 1.0)
+                med_short = ideal * max(0.0, 1.0 - med_f) * 0.25
+                amt = med_short * med_pct
+                if amt > 1e-9:
+                    planned.append((pop, amt, "의료비 보조"))
+
+            # 7) 출산지원
+            if (
+                fert_pct > 1e-12
+                and POP_FERTILE_AGE_MIN <= mean_age <= POP_FERTILE_AGE_MAX
+            ):
+                fertile_h = (
+                    float(getattr(pop, "adult_employed", 0.0) or 0.0)
+                    + float(getattr(pop, "adult_unemployed", 0.0) or 0.0)
+                    + float(getattr(pop, "adult_self_employed", 0.0) or 0.0)
+                )
+                if fertile_h <= 1e-9:
+                    fertile_h = pop_n
+                fert_amt = (
+                    pop_n * POP_CONSUMPTION_MIN_FALLBACK
+                    * fert_pct
+                    * (fertile_h / pop_n)
+                )
+                if fert_amt > 1e-9:
+                    planned.append((pop, fert_amt, "출산지원"))
+
+    return planned
+
 
 
 def pop_age_behavior_profile(mean_age: float) -> Dict[str, float]:
@@ -67995,10 +68765,12 @@ class World:
         if out:
             return out
         # 최연소 성인 코호트
+        country = self.countries.get(st.country_id)
+        retire_age = country_pop_retire_age(country)
         adults = [
             p for p in st.pops
             if p.id != donor.id
-            and POP_YOUTH_AGE_MAX <= pop_mean_age(p, self) < POP_RETIRE_AGE
+            and POP_YOUTH_AGE_MAX <= pop_mean_age(p, self) < retire_age
             and p.total_population() > POP_EMPTY_EPS
         ]
         if adults:
@@ -68196,9 +68968,17 @@ class World:
             access_high = edu_fulfillment
 
             # 스냅샷 후 갱신 (순회 중 pops 변경 대비)
+            country = self.countries.get(st.country_id)
+            retire_age = country_pop_retire_age(country)
+            fert = (
+                float(getattr(country, "pop_fertility_support_pct", 0.0) or 0.0)
+                if country is not None else 0.0
+            )
             for pop in list(st.pops):
                 pop.weekly_aging_and_birth(
-                    st.health, access_basic, access_high, world=self)
+                    st.health, access_basic, access_high, world=self,
+                    fertility_support_pct=fert, retire_age=retire_age,
+                )
                 dr = float(getattr(pop, "last_death_ratio", 0.0) or 0.0)
                 if dr > 1e-9:
                     self.pop_inherit_assets(pop, dr)
@@ -68218,7 +68998,8 @@ class World:
                         pop.child_cohort_weights[child.id] = (
                             float(pop.child_cohort_weights.get(child.id, 0.0) or 0.0) + births
                         )
-                        child.sync_lifecycle_from_age(pop_mean_age(child, self))
+                        child.sync_lifecycle_from_age(
+                            pop_mean_age(child, self), retire_age=retire_age)
 
             # 빈 코호트 소멸
             kept: List[POP] = []
@@ -75593,6 +76374,8 @@ class World:
                 pop.last_consumption_tax = 0.0
                 pop.self_emp_construction_contributed = 0.0
                 pop.last_welfare_received = 0.0
+                pop.last_welfare_claimed = 0.0
+                pop.last_welfare_cut_ratio = 1.0
         for ib in self.investment_banks.values():
             ib.reset_weekly_investment_finance()
 
@@ -76847,7 +77630,8 @@ class World:
                 available_labor = pop.labor_force()
                 mean_age = pop_mean_age(pop, self)
                 pop._cached_mean_age = mean_age
-                if available_labor > 1e-9 and POP_YOUTH_AGE_MAX <= mean_age < POP_RETIRE_AGE:
+                retire_age = country_pop_retire_age(country)
+                if available_labor > 1e-9 and POP_YOUTH_AGE_MAX <= mean_age < retire_age:
                     shares = pop_normalize_edu_shares(getattr(pop, "edu_shares", None))
                     prev_labor = getattr(pop, "flow_ma_labor_sell", None) or {}
                     new_labor: Dict[str, float] = {}
@@ -79825,6 +80609,7 @@ class World:
                 "rate_trend": country_dovish_score(country),
                 "outstanding": bond_market_total_outstanding(self, key),
                 "fair_rate": bond_market_fair_yield_rate(self, key),
+                "market_factor": bond_draw_country_market_factor(self, cid or ""),
             }
             cap_bond_market_portfolio_sells(bm, self, key)
             bond_keys.append(key)
@@ -80206,6 +80991,7 @@ class World:
                     consumption_tax_rate=tax_rate,
                     commerce_sector=commerce,
                     peer_retailers=peers,
+                    country=country,
                 )
             for retailer in retailers:
                 retailer.finalize_weekly_settlement()
@@ -80255,112 +81041,55 @@ class World:
         return "mid"
 
     def _pay_pop_welfare_subsidies(self) -> None:
-        """인구 복지 보조금 — 소비 주문 직전 지급(당주 소비에 반영).
-
-        - 기초 수급: 전주 미충족 수요 부족분 × 커버율(0~100%)
-        - 보편 지원: 전주 수요 필요액 × 소득분위별 지급률(0~200%)
-        국고가 부족하면 CB 국채매입으로 보전(전액 지급).
-        """
+        """인구 복지·출산지원 — 소비 직전 지급. 재정 상한 초과 시 프로라타 삭감."""
         for country in self.countries.values():
-            basic_pct = clamp(
-                float(getattr(country, "pop_basic_income_support_pct", 0.0) or 0.0),
-                0.0, 100.0,
-            ) / 100.0
-            uni_pct = {
-                "low": clamp(
-                    float(getattr(country, "pop_universal_support_low_pct", 0.0) or 0.0),
-                    0.0, 200.0,
-                ) / 100.0,
-                "mid": clamp(
-                    float(getattr(country, "pop_universal_support_mid_pct", 0.0) or 0.0),
-                    0.0, 200.0,
-                ) / 100.0,
-                "high": clamp(
-                    float(getattr(country, "pop_universal_support_high_pct", 0.0) or 0.0),
-                    0.0, 200.0,
-                ) / 100.0,
-            }
-            if (
-                basic_pct <= 1e-12
-                and all(v <= 1e-12 for v in uni_pct.values())
-            ):
-                continue
-
-            # 주초에는 weekly_income이 리셋되므로 전주 소득으로 분위·중위 산정
-            incomes: List[float] = []
+            migrate_pop_welfare_policy_fields(country)
             for st in self.states.values():
                 if st.country_id != country.id:
                     continue
                 for pop in st.pops:
-                    n = pop.total_population()
-                    if n <= 1e-9:
-                        continue
-                    incomes.append(max(0.0, float(pop.last_week_income or 0.0)) / n)
-            incomes.sort()
-            if not incomes:
-                median_pc = 0.0
-            elif len(incomes) % 2 == 1:
-                median_pc = incomes[len(incomes) // 2]
-            else:
-                mid_i = len(incomes) // 2
-                median_pc = 0.5 * (incomes[mid_i - 1] + incomes[mid_i])
-            bracket_labels = {"low": "저소득", "mid": "중산층", "high": "고소득"}
-            planned: List[Tuple["POP", float, str]] = []
+                    pop.last_welfare_claimed = 0.0
+                    pop.last_welfare_cut_ratio = 1.0
 
-            for st in self.states.values():
-                if st.country_id != country.id:
-                    continue
-                for pop in st.pops:
-                    pop_n = pop.total_population()
-                    if pop_n <= 1e-9:
-                        continue
-                    ideal = float(getattr(pop, "last_ideal_consumption_cost", 0.0) or 0.0)
-                    need_sc = clamp(
-                        float(getattr(pop, "last_need_score", 10.0) or 10.0), 0.0, 10.0)
-                    if ideal <= 1e-12:
-                        # 이력 없으면 전주 소득·최소 소비 기준으로 수요액 추정
-                        ideal = max(
-                            float(pop.last_week_income or 0.0),
-                            pop_n * POP_CONSUMPTION_MIN_FALLBACK,
-                        )
-                    stored_short = float(
-                        getattr(pop, "last_demand_shortfall_cost", 0.0) or 0.0)
-                    score_short = ideal * (1.0 - need_sc / 10.0)
-                    shortfall = max(stored_short, score_short)
-
-                    income_base = max(0.0, float(pop.last_week_income or 0.0))
-                    per_capita = income_base / pop_n if pop_n > 1e-9 else 0.0
-                    bracket = self._income_tax_bracket_key(country, per_capita, median_pc)
-
-                    uni_rate = uni_pct.get(bracket, 0.0)
-                    if uni_rate > 1e-12 and ideal > 1e-12:
-                        uni_amt = ideal * uni_rate
-                        if uni_amt > 1e-9:
-                            planned.append((
-                                pop,
-                                uni_amt,
-                                f"보편 지원금({bracket_labels[bracket]})",
-                            ))
-
-                    if basic_pct > 1e-12 and shortfall > 1e-12:
-                        basic_amt = shortfall * basic_pct
-                        if basic_amt > 1e-9:
-                            planned.append((pop, basic_amt, "기초 수급 지원금"))
-
+            planned = pop_welfare_build_planned_payments(self, country)
             if not planned:
+                country.last_pop_welfare_claimed_total = 0.0
+                country.last_pop_welfare_paid_total = 0.0
+                country.last_pop_welfare_cut_ratio = 1.0
+                country.last_pop_welfare_cap = country_pop_welfare_cap(self, country)
                 continue
 
-            # 전액 지급 — 국고 부족분은 CB 국채매입으로 보전
+            total_claimed = sum(amt for _, amt, _ in planned)
+            cap = country_pop_welfare_cap(self, country)
+            cut_ratio = 1.0
+            if cap > 1e-9 and total_claimed > cap + 1e-9:
+                cut_ratio = cap / total_claimed
+            elif cap <= 1e-9 and total_claimed > 1e-9:
+                cut_ratio = 0.0
+
+            country.last_pop_welfare_claimed_total = total_claimed
+            country.last_pop_welfare_cap = cap
+            country.last_pop_welfare_cut_ratio = cut_ratio
+            paid_total = 0.0
+
             for pop, amt, label in planned:
                 if amt <= 1e-12:
                     continue
-                pop.cash += amt
-                pop.weekly_income += amt
-                pop_record_income(pop, label, amt)
+                pop.last_welfare_claimed = (
+                    float(getattr(pop, "last_welfare_claimed", 0.0) or 0.0) + amt)
+                pop.last_welfare_cut_ratio = cut_ratio
+                pay = amt * cut_ratio
+                if pay <= 1e-12:
+                    continue
+                pop.cash += pay
+                pop.weekly_income += pay
+                pop_record_income(pop, label, pay)
                 pop.last_welfare_received = (
-                    float(getattr(pop, "last_welfare_received", 0.0) or 0.0) + amt)
-                country.treasury = float(getattr(country, "treasury", 0.0) or 0.0) - amt
-                gov_record_subsidy(country, label, amt)
+                    float(getattr(pop, "last_welfare_received", 0.0) or 0.0) + pay)
+                country.treasury = float(getattr(country, "treasury", 0.0) or 0.0) - pay
+                paid_total += pay
+                gov_record_subsidy(country, label, pay)
+            country.last_pop_welfare_paid_total = paid_total
             if float(getattr(country, "treasury", 0.0) or 0.0) < -1e-9:
                 country_rescue_treasury_via_cb_bond_purchase(self, country)
 
@@ -85038,6 +85767,10 @@ class World:
                 str(row.get("id", "")),
             )
         )
+        migrate_pop_welfare_policy_fields(country)
+        cap = country_pop_welfare_cap(self, country)
+        planned = pop_welfare_build_planned_payments(self, country)
+        est_claimed = sum(amt for _, amt, _ in planned)
         return {
             "country_id": country_id,
             "country_name": country.name,
@@ -85045,6 +85778,14 @@ class World:
             "summary": summary,
             "states": state_rows,
             "layers": layers,
+            "pop_welfare_cap": round(cap, 2),
+            "pop_welfare_estimated_claim": round(est_claimed, 2),
+            "pop_welfare_last_claimed_total": round(
+                float(getattr(country, "last_pop_welfare_claimed_total", 0.0) or 0.0), 2),
+            "pop_welfare_last_paid_total": round(
+                float(getattr(country, "last_pop_welfare_paid_total", 0.0) or 0.0), 2),
+            "pop_welfare_last_cut_ratio": round(
+                float(getattr(country, "last_pop_welfare_cut_ratio", 1.0) or 1.0), 4),
         }
 
     def get_tactical_indicator_report(self, country_id: str = "") -> Dict[str, Any]:
@@ -85405,14 +86146,36 @@ class World:
                 and self.states.get(co.home_state)
                 and self.states[co.home_state].country_id == country_id
             ),
+            "pop_bracket_support_low_pct": round(
+                float(getattr(country, "pop_bracket_support_low_pct", 0.0) or 0.0), 1),
+            "pop_bracket_support_mid_pct": round(
+                float(getattr(country, "pop_bracket_support_mid_pct", 0.0) or 0.0), 1),
+            "pop_bracket_support_high_pct": round(
+                float(getattr(country, "pop_bracket_support_high_pct", 0.0) or 0.0), 1),
+            "pop_basic_guarantee_pct": round(
+                float(getattr(country, "pop_basic_guarantee_pct", 0.0) or 0.0), 1),
             "pop_basic_income_support_pct": round(
-                float(getattr(country, "pop_basic_income_support_pct", 0.0) or 0.0), 1),
-            "pop_universal_support_low_pct": round(
-                float(getattr(country, "pop_universal_support_low_pct", 0.0) or 0.0), 1),
-            "pop_universal_support_mid_pct": round(
-                float(getattr(country, "pop_universal_support_mid_pct", 0.0) or 0.0), 1),
-            "pop_universal_support_high_pct": round(
-                float(getattr(country, "pop_universal_support_high_pct", 0.0) or 0.0), 1),
+                float(getattr(country, "pop_basic_guarantee_pct",
+                              getattr(country, "pop_basic_income_support_pct", 0.0)) or 0.0), 1),
+            "pop_support_youth_pct": round(
+                float(getattr(country, "pop_support_youth_pct", 0.0) or 0.0), 1),
+            "pop_support_working_pct": round(
+                float(getattr(country, "pop_support_working_pct", 0.0) or 0.0), 1),
+            "pop_support_senior_pct": round(
+                float(getattr(country, "pop_support_senior_pct", 0.0) or 0.0), 1),
+            "pop_unemployment_benefit_pct": round(
+                float(getattr(country, "pop_unemployment_benefit_pct", 0.0) or 0.0), 1),
+            "pop_job_training_pct": round(
+                float(getattr(country, "pop_job_training_pct", 0.0) or 0.0), 1),
+            "pop_education_support_pct": round(
+                float(getattr(country, "pop_education_support_pct", 0.0) or 0.0), 1),
+            "pop_medical_support_pct": round(
+                float(getattr(country, "pop_medical_support_pct", 0.0) or 0.0), 1),
+            "pop_fertility_support_pct": round(
+                float(getattr(country, "pop_fertility_support_pct", 0.0) or 0.0), 1),
+            "pop_housing_relief_pct": round(
+                float(getattr(country, "pop_housing_relief_pct", 0.0) or 0.0), 1),
+            "pop_retire_age": round(country_pop_retire_age(country), 1),
             **country_financial_shock_payload(country),
             **country_policy_points_payload(self, country),
         }
